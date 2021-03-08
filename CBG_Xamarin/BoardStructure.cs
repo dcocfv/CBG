@@ -55,6 +55,7 @@ public class Hex
 {
     Resource type;
     ushort number;
+    ushort direction; //For harbors
 }
 
 public class Vertex
@@ -62,16 +63,23 @@ public class Vertex
 
 }
 
+public class TileGenerationSet
+{
+    System.Collections.Generic.List<HexPosition> location_pool;
+    System.Collections.Generic.List<Resource> resource_pool;
+    System.Collections.Generic.List<ushort> number_pool;
+}
+
+public class BoardGenerationConfig
+{
+    short x_lower, x_upper, y_lower, y_upper, z_lower, z_upper; //Map bounds
+    System.Collections.Generic.List<TileGenerationSet> tile_groups; //Tile randomization groups
+}
+
 public class Board
 {
     System.Collections.Generic.Dictionary<HexPosition, Hex> tiles;
     System.Collections.Generic.Dictionary<VertexPosition, Vertex> intersections;
-
-    //Default constructor
-    public Board()
-    {
-        //TODO: Initialize all members
-    }
 
     //Map bounds constructor
     public Board(short x_lower, short x_upper, short y_lower, short y_upper, short z_lower, short z_upper)
@@ -105,4 +113,8 @@ public class Board
             }
         }
     }
+
+    //Default constructor
+    //Initializes a map with 7 tiles and 6 intersections
+    public Board() : this(-1, 1, -1, 1, -1, 1){}
 }

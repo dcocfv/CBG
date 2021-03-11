@@ -3,6 +3,7 @@ using Android.OS;
 using Android.Support.V7.App;
 using Android.Runtime;
 using Android.Widget;
+using System;
 
 namespace CBG_Xamarin
 {
@@ -15,6 +16,15 @@ namespace CBG_Xamarin
             Xamarin.Essentials.Platform.Init(this, savedInstanceState);
             // Set our view from the "main" layout resource
             SetContentView(Resource.Layout.activity_main);
+
+            //Test code for map saving and loading
+            BoardGenerationConfig foo = new BoardGenerationConfig();
+            foo.name = "TEST";
+            foo.save_xml();
+            BoardGenerationConfig bar = new BoardGenerationConfig();
+            bar = BoardGenerationConfig.load_xml("TEST");
+            Console.WriteLine("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+            Console.WriteLine("Bar's name: " + bar.name);
         }
         public override void OnRequestPermissionsResult(int requestCode, string[] permissions, [GeneratedEnum] Android.Content.PM.Permission[] grantResults)
         {

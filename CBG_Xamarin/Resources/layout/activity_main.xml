@@ -3,14 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
-    <TextView
-        android:text="Text Box... this is a text box"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:layout_width="match_parent"
-        android:layout_height="119.0dp"
-        android:minWidth="25px"
-        android:minHeight="25px"
-        android:id="@+id/textView1"
-        android:layout_marginBottom="65.5dp" />
+    android:layout_height="match_parent"
+    android:gravity="center"
+    android:id="@+id/main">
 </RelativeLayout>

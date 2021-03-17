@@ -4,9 +4,9 @@ using System.Xml.Serialization;
 
 public class HexPosition
 {
-    short x_pos;
-    short y_pos;
-    short z_pos;
+    public short x_pos;
+    public short y_pos;
+    public short z_pos;
 
     public HexPosition(short x, short y, short z)
     {
@@ -66,7 +66,7 @@ public class VertexPosition
     public static bool operator !=(VertexPosition x, VertexPosition y) { return !(x == y); }
 }
 
-enum Resource
+public enum Resource
 {
     brick,
     ore,
@@ -81,9 +81,9 @@ enum Resource
 
 public class Hex
 {
-    Resource type;
-    ushort number;
-    ushort direction; //For harbors
+    public Resource type = Resource.brick;
+    public ushort number = 8;
+    public ushort direction = 1; //For harbors
 }
 
 public class Vertex
@@ -125,21 +125,23 @@ public class BoardGenerationConfig
 
 public class Board
 {
-    Dictionary<HexPosition, Hex> tiles;
-    Dictionary<VertexPosition, Vertex> intersections;
+    public Dictionary<HexPosition, Hex> tiles = new Dictionary<HexPosition, Hex>();
+    public Dictionary<VertexPosition, Vertex> intersections = new Dictionary<VertexPosition, Vertex>();
 
     //Map bounds constructor (creates an empty map of specified size)
     public Board(short x_lower, short x_upper, short y_lower, short y_upper, short z_lower, short z_upper)
     {
         //Add all tiles to the board
-        for(short x = x_lower; x < x_upper; x++)
+        for(short x = x_lower; x <= x_upper; x++)
         {
-            for(short y = y_lower; y < y_upper; y++)
+            for(short y = y_lower; y <= y_upper; y++)
             {
-                for (short z = z_lower; z < z_upper; z++)
+                for (short z = z_lower; z <= z_upper; z++)
                 {
                     if(x + y + z == 0)
+                    {
                         tiles.Add(new HexPosition(x, y, z), new Hex());
+                    }
                 }
             }
         }

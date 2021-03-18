@@ -58,13 +58,13 @@ namespace CBG_Xamarin
 
             //TODO: get the actual board from the generator
             //Create an abritrary board for testing
-            Board testBoard = new Board(-10, 10, -10, 10, -10, 10);
+            Board testBoard = new Board(-2, 2, -2, 2, -2, 2);
 
             //Get a variable for the main relative layout
             RelativeLayout r = FindViewById<RelativeLayout>(Resource.Id.board);
 
             //The "size" of the hexagons
-            var size = 30;
+            var size = 50;
             
             //Loop through all the tiles in the board
             foreach (KeyValuePair<HexPosition, Hex> currentTile in testBoard.tiles)
@@ -73,16 +73,56 @@ namespace CBG_Xamarin
                 ImageView currentHexImage = new ImageView(this);
                 r.AddView(currentHexImage);
 
-                //TODO: set proper image file based on resource type
-                currentHexImage.SetImageResource(Resource.Drawable.test);
+                //Set proper image file based on resource type
+                var currentResource = currentTile.Value.type;
+                switch (currentResource)
+                {
+                    case global::Resource.brick:
+                        currentHexImage.SetImageResource(Resource.Drawable.BrickPiece);
+                        break;
+                    case global::Resource.ore:
+                        currentHexImage.SetImageResource(Resource.Drawable.OrePiece);
+                        break;
+                    case global::Resource.sheep:
+                        currentHexImage.SetImageResource(Resource.Drawable.WoolPiece);
+                        break;
+                    case global::Resource.wheat:
+                        currentHexImage.SetImageResource(Resource.Drawable.GrainPiece);
+                        break;
+                    case global::Resource.wood:
+                        currentHexImage.SetImageResource(Resource.Drawable.LumberPiece);
+                        break;
+                    case global::Resource.gold:
+                        currentHexImage.SetImageResource(Resource.Drawable.test);
+                        break;
+                    case global::Resource.desert:
+                        currentHexImage.SetImageResource(Resource.Drawable.DesertPiece);
+                        break;
+                    case global::Resource.harbor:
+                        currentHexImage.SetImageResource(Resource.Drawable.test);
+                        break;
+                    case global::Resource.sea:
+                        currentHexImage.SetImageResource(Resource.Drawable.test);
+                        break;
+                    default:
+                        currentHexImage.SetImageResource(Resource.Drawable.test);
+                        break;
+                }
 
                 //Do hex to pixel conversion
-                var xPos = size * (Math.Sqrt(3) * currentTile.Key.x_pos + (Math.Sqrt(3) / 2) * currentTile.Key.z_pos);
-                var yPos = size * ((3.0 / 2) * currentTile.Key.z_pos);
+                //var xPos = size * (Math.Sqrt(3) * currentTile.Key.x_pos + (Math.Sqrt(3) / 2) * currentTile.Key.z_pos);
+                //var yPos = size * ((3.0 / 2) * currentTile.Key.z_pos);
+                var xPos = size * ((3.0 / 2) * currentTile.Key.x_pos);
+                var yPos = size * ((Math.Sqrt(3) / 2) * currentTile.Key.x_pos + (Math.Sqrt(3)) * currentTile.Key.z_pos);
 
                 //Move the hexagon into place
                 currentHexImage.TranslationX = (int)xPos;
                 currentHexImage.TranslationY = (int)yPos;
+
+                //Adjust max size of the tiles
+                currentHexImage.SetMaxHeight(100);
+                currentHexImage.SetMaxWidth(100);
+                currentHexImage.SetAdjustViewBounds(true);
 
                 //Create a new image and add it to the layout
                 TextView currentChit = new TextView(this);

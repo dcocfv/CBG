@@ -140,6 +140,10 @@ namespace CBG_Xamarin
                 {
                     currentChit.SetTextColor(Android.Graphics.Color.Red);
                 }
+                else
+                {
+                    currentChit.SetTextColor(Android.Graphics.Color.LightGray);
+                }
             }
         }
         public override void OnRequestPermissionsResult(int requestCode, string[] permissions, [GeneratedEnum] Android.Content.PM.Permission[] grantResults)

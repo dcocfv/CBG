@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Xml.Serialization;
 
@@ -81,9 +82,30 @@ public enum Resource
 
 public class Hex
 {
-    public Resource type = Resource.brick;
-    public ushort number = 8;
-    public ushort direction = 1; //For harbors
+    public Resource type;
+    public ushort number;
+    public ushort direction; //For harbors
+
+    public Hex(TileGenerationSet tileset)
+    {
+        Random rand = new Random();
+
+        Console.WriteLine("res count: " + tileset.resource_pool.Count);
+        Console.WriteLine("num count: " + tileset.number_pool.Count);
+
+        type = tileset.resource_pool[rand.Next(tileset.resource_pool.Count)];
+        tileset.resource_pool.RemoveAt(tileset.resource_pool.FindIndex(res => res == type));
+
+        if (type == Resource.desert)
+            number = 0;
+        else
+        {
+            number = tileset.number_pool[rand.Next(tileset.number_pool.Count)];
+            tileset.number_pool.RemoveAt(tileset.number_pool.FindIndex(num => num == number));
+        }
+
+        direction = 1;
+    }
 }
 
 public class Vertex
@@ -93,9 +115,42 @@ public class Vertex
 
 public class TileGenerationSet
 {
-    List<HexPosition> location_pool;
-    List<Resource> resource_pool;
-    List<ushort> number_pool;
+    public List<HexPosition> location_pool;
+    public List<Resource> resource_pool;
+    public List<ushort> number_pool;
+
+    // default constructor for TileGeneration, used for default game of Catan, with 19 tiles, hex radius of 2,
+    // standard distribution of hex tiles and chit numbers
+    public TileGenerationSet()
+    {
+        location_pool = new List<HexPosition>();
+        for (short x = -2; x <= 2; x++)
+        {
+            for (short y = -2; y <= 2; y++)
+            {
+                for (short z = -2; z <= 2; z++)
+                {
+                    if (x + y + z == 0)
+                    {
+                        location_pool.Add(new HexPosition(x, y, z));
+                    }
+                }
+            }
+        }
+
+        resource_pool = new List<Resource>()
+        {
+            Resource.ore, Resource.ore, Resource.ore, Resource.brick, Resource.brick, Resource.brick,
+            Resource.wheat, Resource.wheat, Resource.wheat, Resource.wheat, Resource.wood, Resource.wood,
+            Resource.wood, Resource.wood, Resource.sheep, Resource.sheep, Resource.sheep, Resource.sheep, 
+            Resource.desert
+        };
+
+        number_pool = new List<ushort>()
+        {
+            2, 3, 3, 4, 4, 5, 5, 6, 6, 8, 8, 9, 9, 10, 10, 11, 11, 12
+        };
+    }
 
     //TODO: probably add functions to this class specifying how to generate the tiles within this group
 }
@@ -131,6 +186,9 @@ public class Board
     //Map bounds constructor (creates an empty map of specified size)
     public Board(short x_lower, short x_upper, short y_lower, short y_upper, short z_lower, short z_upper)
     {
+
+        TileGenerationSet defaultGenSet = new TileGenerationSet();
+
         //Add all tiles to the board
         for(short x = x_lower; x <= x_upper; x++)
         {
@@ -140,7 +198,7 @@ public class Board
                 {
                     if(x + y + z == 0)
                     {
-                        tiles.Add(new HexPosition(x, y, z), new Hex());
+                        tiles.Add(new HexPosition(x, y, z), new Hex(defaultGenSet));
                     }
                 }
             }

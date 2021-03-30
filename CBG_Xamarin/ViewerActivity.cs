@@ -124,12 +124,12 @@ namespace CBG_Xamarin
                 currentHexImage.SetMaxWidth(100);
                 currentHexImage.SetAdjustViewBounds(true);
 
-                //Create a new image and add it to the layout
+                //Create a new textView and add it to the layout
                 TextView currentChit = new TextView(this);
                 r.AddView(currentChit);
 
                 //Set the number of the chit
-                currentChit.SetText(currentTile.Value.number.ToString().ToCharArray(),0,1);
+                currentChit.SetText(currentTile.Value.number.ToString().ToCharArray(), 0, currentTile.Value.number.ToString().Length);
 
                 //Set the location of the chit
                 currentChit.TranslationX = (int)xPos + 12;

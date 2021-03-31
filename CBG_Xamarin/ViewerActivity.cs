@@ -47,18 +47,15 @@ namespace CBG_Xamarin
             };
 
 
-            //Test code for map saving and loading
-            /*BoardGenerationConfig foo = new BoardGenerationConfig();
-            foo.name = "TEST";
+            //Test code for map saving
+            //Currently running the app twice from the same build crashes because of this saving twice
+            //If you wish to generate multiple boards by restarting the app, build once, then comment out these two lines and build again
+            BoardGenerationConfig foo = new BoardGenerationConfig();
             foo.save_xml();
-            BoardGenerationConfig bar = new BoardGenerationConfig();
-            bar = BoardGenerationConfig.load_xml("TEST");
-            Console.WriteLine("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
-            Console.WriteLine("Bar's name: " + bar.name);*/
 
-            //TODO: get the actual board from the generator
+            //TODO: get the actual board name from the generator
             //Create an abritrary board for testing
-            Board testBoard = new Board(-2, 2, -2, 2, -2, 2);
+            Board testBoard = new Board("base_3-4");
 
             //Get a variable for the main relative layout
             RelativeLayout r = FindViewById<RelativeLayout>(Resource.Id.board);
@@ -98,11 +95,26 @@ namespace CBG_Xamarin
                     case global::Resource.desert:
                         currentHexImage.SetImageResource(Resource.Drawable.DesertPiece);
                         break;
-                    case global::Resource.harbor:
-                        currentHexImage.SetImageResource(Resource.Drawable.test);
+                    case global::Resource.harbor_brick:
+                        currentHexImage.SetImageResource(Resource.Drawable.HarborPiece_Brick);
+                        break;
+                    case global::Resource.harbor_ore:
+                        currentHexImage.SetImageResource(Resource.Drawable.HarborPiece_Ore);
+                        break;
+                    case global::Resource.harbor_sheep:
+                        currentHexImage.SetImageResource(Resource.Drawable.HarborPiece_Wool);
+                        break;
+                    case global::Resource.harbor_wheat:
+                        currentHexImage.SetImageResource(Resource.Drawable.HarborPiece_Grain);
+                        break;
+                    case global::Resource.harbor_wood:
+                        currentHexImage.SetImageResource(Resource.Drawable.HarborPiece_Lumber);
+                        break;
+                    case global::Resource.harbor_any:
+                        currentHexImage.SetImageResource(Resource.Drawable.HarborPiece_QuestionMark);
                         break;
                     case global::Resource.sea:
-                        currentHexImage.SetImageResource(Resource.Drawable.test);
+                        currentHexImage.SetImageResource(Resource.Drawable.HarborPiece);
                         break;
                     default:
                         currentHexImage.SetImageResource(Resource.Drawable.test);

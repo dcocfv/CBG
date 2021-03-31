@@ -63,8 +63,11 @@ namespace CBG_Xamarin
             //Get a variable for the main relative layout
             RelativeLayout r = FindViewById<RelativeLayout>(Resource.Id.board);
 
-            //The "size" of the hexagons
-            var size = 50;
+            //The size (height and width) in pixels of the images to be displayed on screen
+            var dimensions = 200;
+
+            //The "size" of the hexagons (used in positioning the hexes in the grid)
+            var size = dimensions / 2;
             
             //Loop through all the tiles in the board
             foreach (KeyValuePair<HexPosition, Hex> currentTile in testBoard.tiles)
@@ -120,8 +123,8 @@ namespace CBG_Xamarin
                 currentHexImage.TranslationY = (int)yPos;
 
                 //Adjust max size of the tiles
-                currentHexImage.SetMaxHeight(100);
-                currentHexImage.SetMaxWidth(100);
+                currentHexImage.SetMaxHeight(dimensions);
+                currentHexImage.SetMaxWidth(dimensions);
                 currentHexImage.SetAdjustViewBounds(true);
 
                 //Create a new textView and add it to the layout
@@ -132,8 +135,15 @@ namespace CBG_Xamarin
                 currentChit.SetText(currentTile.Value.number.ToString().ToCharArray(), 0, currentTile.Value.number.ToString().Length);
 
                 //Set the location of the chit
-                currentChit.TranslationX = (int)xPos + 12;
-                currentChit.TranslationY = (int)yPos;
+                currentChit.TranslationX = (int)xPos + (dimensions/3);
+                if (currentTile.Value.number.ToString().Length == 1)
+                {
+                    currentChit.TranslationX += (dimensions/10);
+                }
+                currentChit.TranslationY = (int)yPos + (dimensions/5);
+
+                //Scale the chit
+                currentChit.SetTextSize(Android.Util.ComplexUnitType.Px, dimensions / (float)2.7);
 
                 //Set color
                 if(currentTile.Value.number == 8 || currentTile.Value.number == 6)

@@ -199,15 +199,15 @@ public class BoardGenerationConfig
 
 
         TileGenerationSet harbors = new TileGenerationSet();
-        harbors.location_pool.Add(new HexPosition(-3, 3, 0, 2));
-        harbors.location_pool.Add(new HexPosition(-1, 3, -2, 3));
-        harbors.location_pool.Add(new HexPosition(1, 2, -3, 3));
-        harbors.location_pool.Add(new HexPosition(3, 0, -3, 4));
-        harbors.location_pool.Add(new HexPosition(3, -2, -1, 5));
-        harbors.location_pool.Add(new HexPosition(2, -3, 1, 5));
-        harbors.location_pool.Add(new HexPosition(0, -3, 3, 0));
-        harbors.location_pool.Add(new HexPosition(-2, -1, 3, 1));
-        harbors.location_pool.Add(new HexPosition(-3, 1, 2, 1));
+        harbors.location_pool.Add(new HexPosition(-3, 3, 0, 5));
+        harbors.location_pool.Add(new HexPosition(-1, 3, -2, 0));
+        harbors.location_pool.Add(new HexPosition(1, 2, -3, 0));
+        harbors.location_pool.Add(new HexPosition(3, 0, -3, 1));
+        harbors.location_pool.Add(new HexPosition(3, -2, -1, 2));
+        harbors.location_pool.Add(new HexPosition(2, -3, 1, 2));
+        harbors.location_pool.Add(new HexPosition(0, -3, 3, 3));
+        harbors.location_pool.Add(new HexPosition(-2, -1, 3, 4));
+        harbors.location_pool.Add(new HexPosition(-3, 1, 2, 4));
 
         harbors.resource_pool = new List<Resource>()
         {

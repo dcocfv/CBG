@@ -50,8 +50,8 @@ namespace CBG_Xamarin
             //Test code for map saving
             //Currently running the app twice from the same build crashes because of this saving twice
             //If you wish to generate multiple boards by restarting the app, build once, then comment out these two lines and build again
-            BoardGenerationConfig foo = new BoardGenerationConfig();
-            foo.save_xml();
+            //BoardGenerationConfig foo = new BoardGenerationConfig();
+            //foo.save_xml();
 
             //TODO: get the actual board name from the generator
             //Create an abritrary board for testing
@@ -121,6 +121,9 @@ namespace CBG_Xamarin
                         break;
                 }
 
+                //Rotate harbor pieces
+                currentHexImage.Rotation = currentTile.Key.direction * 60;
+
                 //Do hex to pixel conversion
                 //var xPos = size * (Math.Sqrt(3) * currentTile.Key.x_pos + (Math.Sqrt(3) / 2) * currentTile.Key.z_pos);
                 //var yPos = size * ((3.0 / 2) * currentTile.Key.z_pos);
@@ -136,25 +139,30 @@ namespace CBG_Xamarin
                 currentHexImage.SetMaxWidth(100);
                 currentHexImage.SetAdjustViewBounds(true);
 
-                //Create a new textView and add it to the layout
-                TextView currentChit = new TextView(this);
-                r.AddView(currentChit);
-
-                //Set the number of the chit
-                currentChit.SetText(currentTile.Value.number.ToString().ToCharArray(), 0, currentTile.Value.number.ToString().Length);
-
-                //Set the location of the chit
-                currentChit.TranslationX = (int)xPos + 12;
-                currentChit.TranslationY = (int)yPos;
-
-                //Set color
-                if(currentTile.Value.number == 8 || currentTile.Value.number == 6)
+                //If the tile produces anything
+                if (currentTile.Value.number != 0)
                 {
-                    currentChit.SetTextColor(Android.Graphics.Color.Red);
-                }
-                else
-                {
-                    currentChit.SetTextColor(Android.Graphics.Color.LightGray);
+
+                    //Create a new textView and add it to the layout
+                    TextView currentChit = new TextView(this);
+                    r.AddView(currentChit);
+
+                    //Set the number of the chit
+                    currentChit.SetText(currentTile.Value.number.ToString().ToCharArray(), 0, currentTile.Value.number.ToString().Length);
+
+                    //Set the location of the chit
+                    currentChit.TranslationX = (int)xPos + 12;
+                    currentChit.TranslationY = (int)yPos;
+
+                    //Set color
+                    if (currentTile.Value.number == 8 || currentTile.Value.number == 6)
+                    {
+                        currentChit.SetTextColor(Android.Graphics.Color.Red);
+                    }
+                    else
+                    {
+                        currentChit.SetTextColor(Android.Graphics.Color.LightGray);
+                    }
                 }
             }
         }

@@ -1,4 +1,4 @@
-﻿using Android.App;
+using Android.App;
 using Android.OS;
 using Android.Support.V7.App;
 using Android.Runtime;
@@ -47,18 +47,15 @@ namespace CBG_Xamarin
             };
 
 
-            //Test code for map saving and loading
-            /*BoardGenerationConfig foo = new BoardGenerationConfig();
-            foo.name = "TEST";
+            //Test code for map saving
+            //Currently running the app twice from the same build crashes because of this saving twice
+            //If you wish to generate multiple boards by restarting the app, build once, then comment out these two lines and build again
+            BoardGenerationConfig foo = new BoardGenerationConfig();
             foo.save_xml();
-            BoardGenerationConfig bar = new BoardGenerationConfig();
-            bar = BoardGenerationConfig.load_xml("TEST");
-            Console.WriteLine("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
-            Console.WriteLine("Bar's name: " + bar.name);*/
 
-            //TODO: get the actual board from the generator
+            //TODO: get the actual board name from the generator
             //Create an abritrary board for testing
-            Board testBoard = new Board(-2, 2, -2, 2, -2, 2);
+            Board testBoard = new Board("base_3-4");
 
             //Get a variable for the main relative layout
             RelativeLayout r = FindViewById<RelativeLayout>(Resource.Id.board);
@@ -101,16 +98,34 @@ namespace CBG_Xamarin
                     case global::Resource.desert:
                         currentHexImage.SetImageResource(Resource.Drawable.DesertPiece);
                         break;
-                    case global::Resource.harbor:
-                        currentHexImage.SetImageResource(Resource.Drawable.test);
+                    case global::Resource.harbor_brick:
+                        currentHexImage.SetImageResource(Resource.Drawable.HarborPiece_Brick);
+                        break;
+                    case global::Resource.harbor_ore:
+                        currentHexImage.SetImageResource(Resource.Drawable.HarborPiece_Ore);
+                        break;
+                    case global::Resource.harbor_sheep:
+                        currentHexImage.SetImageResource(Resource.Drawable.HarborPiece_Wool);
+                        break;
+                    case global::Resource.harbor_wheat:
+                        currentHexImage.SetImageResource(Resource.Drawable.HarborPiece_Grain);
+                        break;
+                    case global::Resource.harbor_wood:
+                        currentHexImage.SetImageResource(Resource.Drawable.HarborPiece_Lumber);
+                        break;
+                    case global::Resource.harbor_any:
+                        currentHexImage.SetImageResource(Resource.Drawable.HarborPiece_QuestionMark);
                         break;
                     case global::Resource.sea:
-                        currentHexImage.SetImageResource(Resource.Drawable.test);
+                        currentHexImage.SetImageResource(Resource.Drawable.HarborPiece);
                         break;
                     default:
                         currentHexImage.SetImageResource(Resource.Drawable.test);
                         break;
                 }
+
+                //Rotate harbor pieces
+                currentHexImage.Rotation = currentTile.Key.direction * 60;
 
                 //Do hex to pixel conversion
                 //var xPos = size * (Math.Sqrt(3) * currentTile.Key.x_pos + (Math.Sqrt(3) / 2) * currentTile.Key.z_pos);
@@ -127,32 +142,37 @@ namespace CBG_Xamarin
                 currentHexImage.SetMaxWidth(dimensions);
                 currentHexImage.SetAdjustViewBounds(true);
 
-                //Create a new textView and add it to the layout
-                TextView currentChit = new TextView(this);
-                r.AddView(currentChit);
-
-                //Set the number of the chit
-                currentChit.SetText(currentTile.Value.number.ToString().ToCharArray(), 0, currentTile.Value.number.ToString().Length);
-
-                //Set the location of the chit
-                currentChit.TranslationX = (int)xPos + (dimensions/3);
-                if (currentTile.Value.number.ToString().Length == 1)
+                //If the tile produces anything
+                if (currentTile.Value.number != 0)
                 {
-                    currentChit.TranslationX += (dimensions/10);
-                }
-                currentChit.TranslationY = (int)yPos + (dimensions/5);
 
-                //Scale the chit
-                currentChit.SetTextSize(Android.Util.ComplexUnitType.Px, dimensions / (float)2.7);
+                    //Create a new textView and add it to the layout
+                    TextView currentChit = new TextView(this);
+                    r.AddView(currentChit);
 
-                //Set color
-                if(currentTile.Value.number == 8 || currentTile.Value.number == 6)
-                {
-                    currentChit.SetTextColor(Android.Graphics.Color.Red);
-                }
-                else
-                {
-                    currentChit.SetTextColor(Android.Graphics.Color.LightGray);
+                    //Set the number of the chit
+                    currentChit.SetText(currentTile.Value.number.ToString().ToCharArray(), 0, currentTile.Value.number.ToString().Length);
+
+                    //Set the location of the chit
+                    currentChit.TranslationX = (int)xPos + (dimensions/3);
+                    if (currentTile.Value.number.ToString().Length == 1)
+                    {
+                        currentChit.TranslationX += (dimensions/10);
+                    }
+                    currentChit.TranslationY = (int)yPos + (dimensions/5);
+
+                    //Scale the chit
+                    currentChit.SetTextSize(Android.Util.ComplexUnitType.Px, dimensions / (float)2.7);
+
+                    //Set color
+                    if (currentTile.Value.number == 8 || currentTile.Value.number == 6)
+                    {
+                        currentChit.SetTextColor(Android.Graphics.Color.Red);
+                    }
+                    else
+                    {
+                        currentChit.SetTextColor(Android.Graphics.Color.LightGray);
+                    }
                 }
             }
         }

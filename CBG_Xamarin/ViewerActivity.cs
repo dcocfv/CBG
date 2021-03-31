@@ -1,4 +1,4 @@
-﻿using Android.App;
+using Android.App;
 using Android.OS;
 using Android.Support.V7.App;
 using Android.Runtime;
@@ -50,8 +50,8 @@ namespace CBG_Xamarin
             //Test code for map saving
             //Currently running the app twice from the same build crashes because of this saving twice
             //If you wish to generate multiple boards by restarting the app, build once, then comment out these two lines and build again
-            //BoardGenerationConfig foo = new BoardGenerationConfig();
-            //foo.save_xml();
+            BoardGenerationConfig foo = new BoardGenerationConfig();
+            foo.save_xml();
 
             //TODO: get the actual board name from the generator
             //Create an abritrary board for testing
@@ -60,8 +60,11 @@ namespace CBG_Xamarin
             //Get a variable for the main relative layout
             RelativeLayout r = FindViewById<RelativeLayout>(Resource.Id.board);
 
-            //The "size" of the hexagons
-            var size = 50;
+            //The size (height and width) in pixels of the images to be displayed on screen
+            var dimensions = 200;
+
+            //The "size" of the hexagons (used in positioning the hexes in the grid)
+            var size = dimensions / 2;
             
             //Loop through all the tiles in the board
             foreach (KeyValuePair<HexPosition, Hex> currentTile in testBoard.tiles)
@@ -135,8 +138,8 @@ namespace CBG_Xamarin
                 currentHexImage.TranslationY = (int)yPos;
 
                 //Adjust max size of the tiles
-                currentHexImage.SetMaxHeight(100);
-                currentHexImage.SetMaxWidth(100);
+                currentHexImage.SetMaxHeight(dimensions);
+                currentHexImage.SetMaxWidth(dimensions);
                 currentHexImage.SetAdjustViewBounds(true);
 
                 //If the tile produces anything
@@ -151,8 +154,15 @@ namespace CBG_Xamarin
                     currentChit.SetText(currentTile.Value.number.ToString().ToCharArray(), 0, currentTile.Value.number.ToString().Length);
 
                     //Set the location of the chit
-                    currentChit.TranslationX = (int)xPos + 12;
-                    currentChit.TranslationY = (int)yPos;
+                    currentChit.TranslationX = (int)xPos + (dimensions/3);
+                    if (currentTile.Value.number.ToString().Length == 1)
+                    {
+                        currentChit.TranslationX += (dimensions/10);
+                    }
+                    currentChit.TranslationY = (int)yPos + (dimensions/5);
+
+                    //Scale the chit
+                    currentChit.SetTextSize(Android.Util.ComplexUnitType.Px, dimensions / (float)2.7);
 
                     //Set color
                     if (currentTile.Value.number == 8 || currentTile.Value.number == 6)

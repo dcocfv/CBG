@@ -30,12 +30,12 @@ public class HexPosition
     public List<HexPosition> GetNeighbors()
     {
         List<HexPosition> n = new List<HexPosition>();
-        n.Add(new HexPosition(x_pos,   y_pos++, z_pos--));
-        n.Add(new HexPosition(x_pos++, y_pos,   z_pos--));
-        n.Add(new HexPosition(x_pos++, y_pos--, z_pos  ));
-        n.Add(new HexPosition(x_pos,   y_pos--, z_pos++));
-        n.Add(new HexPosition(x_pos--, y_pos,   z_pos++));
-        n.Add(new HexPosition(x_pos--, y_pos++, z_pos  ));
+        n.Add(new HexPosition(x_pos,   (short)(y_pos + 1), (short)(z_pos - 1)));
+        n.Add(new HexPosition((short)(x_pos + 1), y_pos, (short)(z_pos - 1)));
+        n.Add(new HexPosition((short)(x_pos + 1), (short)(y_pos - 1), z_pos  ));
+        n.Add(new HexPosition(x_pos, (short)(y_pos - 1), (short)(z_pos + 1)));
+        n.Add(new HexPosition((short)(x_pos - 1), y_pos, (short)(z_pos + 1)));
+        n.Add(new HexPosition((short)(x_pos - 1), (short)(y_pos + 1), z_pos  ));
         
         return n;
     }
@@ -43,10 +43,12 @@ public class HexPosition
     public override bool Equals(object obj)
     {
         var other = obj as HexPosition;
-        if(other == null || x_pos != other.x_pos || y_pos != other.y_pos || z_pos != other.z_pos)
-            return false;
-        else
-            return true;
+        return x_pos == other.x_pos && y_pos == other.y_pos && z_pos == other.z_pos;
+    }
+
+    public override int GetHashCode()
+    {
+        return x_pos.GetHashCode() + y_pos.GetHashCode() + z_pos.GetHashCode();
     }
 
     public static bool operator ==(HexPosition x, HexPosition y) { return x.Equals(y); }
@@ -56,24 +58,29 @@ public class HexPosition
 public class VertexPosition
 {
     //Unordered set of 3 neighboring hex positions
-    HashSet<HexPosition> neighbors = new HashSet<HexPosition>();
+    public HashSet<HexPosition> neighbors = new HashSet<HexPosition>();
 
     public VertexPosition(){}
 
     public VertexPosition(HexPosition a, HexPosition b, HexPosition c)
     {
-        neighbors.Add(a);
-        neighbors.Add(b);
-        neighbors.Add(c);
+        if(!neighbors.Add(a))
+            Console.WriteLine("failed to add a");
+        if(!neighbors.Add(b))
+            Console.WriteLine("failed to add b");
+        if(!neighbors.Add(c))
+            Console.WriteLine("failed to add c");
     }
 
     public override bool Equals(object obj)
     {
         var other = obj as VertexPosition;
-        if(other == null || neighbors != other.neighbors)
-            return false;
-        else
-            return true;
+        return neighbors.SetEquals(other.neighbors);
+    }
+
+    public override int GetHashCode()
+    {
+        return neighbors.GetHashCode();
     }
 
     public static bool operator ==(VertexPosition x, VertexPosition y) { return x.Equals(y); }
@@ -162,9 +169,12 @@ public class BoardGenerationConfig
         return saved_board;
     }
 
-    // default constructor for TileGeneration, used for default game of Catan, with 19 tiles, hex radius of 2,
-    // standard distribution of hex tiles and chit numbers
-    public BoardGenerationConfig()
+    //Default constructor (empty) required for xml loading to work
+    public BoardGenerationConfig(){}
+
+    // standard map constructor for TileGeneration, used for default game of Catan, with 19 tiles, hex radius of 2,
+    // standard distribution of hex tiles and chit numbers, with sea and harbors around edge
+    public BoardGenerationConfig(string dummy_parameter)
     {
         name = "base_3-4";
 
@@ -238,6 +248,42 @@ public class BoardGenerationConfig
         tile_groups.Add(harbors);
         tile_groups.Add(sea);
     }
+
+    //TEST CONSTRUCTOR
+    public BoardGenerationConfig(int dummy_parameter)
+    {
+        name = "test";
+
+        TileGenerationSet main_island = new TileGenerationSet();
+        for (short x = -1; x <= 1; x++)
+        {
+            for (short y = -1; y <= 1; y++)
+            {
+                for (short z = -1; z <= 1; z++)
+                {
+                    if (x + y + z == 0)
+                    {
+                        main_island.location_pool.Add(new HexPosition(x, y, z));
+                    }
+                }
+            }
+        }
+
+        main_island.resource_pool = new List<Resource>()
+        {
+            Resource.ore, Resource.ore, Resource.ore, Resource.brick, Resource.brick, Resource.brick,
+            Resource.wheat, Resource.wheat, Resource.wheat, Resource.wheat, Resource.wood, Resource.wood,
+            Resource.wood, Resource.wood, Resource.sheep, Resource.sheep, Resource.sheep, Resource.sheep,
+            Resource.desert
+        };
+
+        main_island.number_pool = new List<ushort>()
+        {
+            2, 3, 3, 4, 4, 5, 5, 6, 6, 8, 8, 9, 9, 10, 10, 11, 11, 12
+        };
+
+        tile_groups.Add(main_island);
+    }
 }
 
 public class Board
@@ -291,27 +337,33 @@ public class Board
     //Given the name of the map, fetch the saved map config and load that map
     public Board(string map_name)
     {
-        //Load the board config
+        //Load the board configuration
         BoardGenerationConfig current_board_config = BoardGenerationConfig.load_xml(map_name);
 
+        //Add all tiles
         foreach(var tileset in current_board_config.tile_groups)
         {
-            foreach(var location in tileset.location_pool)
+            foreach(HexPosition location in tileset.location_pool)
             {
                 tiles.Add(new HexPosition(location.x_pos, location.y_pos, location.z_pos, location.direction), new Hex(tileset));
             }
         }
 
         //Add all intersections
-        foreach (KeyValuePair<HexPosition, Hex> tile in tiles)
+        foreach(KeyValuePair<HexPosition, Hex> tile in tiles)
         {
             //Check every intersection by inspecting the two mutual neighbors
             List<HexPosition> neighbors = tile.Key.GetNeighbors();
-            for (int i = 0; i < 6; i++)
+            for(int i = 0; i < 6; i++)
             {
                 int j = i + 1 < 6 ? i + 1 : 0;
+
+                Console.WriteLine("TILE:   " + tile.Key.x_pos + " " + tile.Key.y_pos + " " + tile.Key.z_pos);
+                Console.WriteLine("" + neighbors[i].x_pos + " " + neighbors[i].y_pos + " " + neighbors[i].z_pos);
+                Console.WriteLine("" + neighbors[j].x_pos + " " + neighbors[j].y_pos + " " + neighbors[j].z_pos);
+
                 //Check that both neighbors are in the board
-                if (tiles.ContainsKey(neighbors[i]) && tiles.ContainsKey(neighbors[j]))
+                if(tiles.ContainsKey(neighbors[i]) && tiles.ContainsKey(neighbors[j]))
                 {
                     intersections.TryAdd(new VertexPosition(tile.Key, neighbors[i], neighbors[j]), new Vertex());
                 }

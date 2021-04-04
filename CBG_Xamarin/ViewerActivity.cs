@@ -50,12 +50,16 @@ namespace CBG_Xamarin
             //Test code for map saving
             //Currently running the app twice from the same build crashes because of this saving twice
             //If you wish to generate multiple boards by restarting the app, build once, then comment out these two lines and build again
-            BoardGenerationConfig foo = new BoardGenerationConfig();
+            BoardGenerationConfig foo = new BoardGenerationConfig((int)1);
             foo.save_xml();
 
             //TODO: get the actual board name from the generator
             //Create an abritrary board for testing
-            Board testBoard = new Board("base_3-4");
+            Board testBoard = new Board("test");
+
+
+            analyzer.acceptable_variance(testBoard);
+
 
             //Get a variable for the main relative layout
             RelativeLayout r = FindViewById<RelativeLayout>(Resource.Id.board);

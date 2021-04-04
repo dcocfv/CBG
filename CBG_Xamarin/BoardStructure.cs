@@ -64,12 +64,9 @@ public class VertexPosition
 
     public VertexPosition(HexPosition a, HexPosition b, HexPosition c)
     {
-        if(!neighbors.Add(a))
-            Console.WriteLine("failed to add a");
-        if(!neighbors.Add(b))
-            Console.WriteLine("failed to add b");
-        if(!neighbors.Add(c))
-            Console.WriteLine("failed to add c");
+        neighbors.Add(a);
+        neighbors.Add(b);
+        neighbors.Add(c);
     }
 
     public override bool Equals(object obj)
@@ -80,7 +77,12 @@ public class VertexPosition
 
     public override int GetHashCode()
     {
-        return neighbors.GetHashCode();
+        int code = 0;
+        foreach(HexPosition h in neighbors)
+        {
+            code += h.GetHashCode();
+        }
+        return code;
     }
 
     public static bool operator ==(VertexPosition x, VertexPosition y) { return x.Equals(y); }
@@ -357,13 +359,10 @@ public class Board
             for(int i = 0; i < 6; i++)
             {
                 int j = i + 1 < 6 ? i + 1 : 0;
-
-                Console.WriteLine("TILE:   " + tile.Key.x_pos + " " + tile.Key.y_pos + " " + tile.Key.z_pos);
-                Console.WriteLine("" + neighbors[i].x_pos + " " + neighbors[i].y_pos + " " + neighbors[i].z_pos);
-                Console.WriteLine("" + neighbors[j].x_pos + " " + neighbors[j].y_pos + " " + neighbors[j].z_pos);
-
                 //Check that both neighbors are in the board
-                if(tiles.ContainsKey(neighbors[i]) && tiles.ContainsKey(neighbors[j]))
+                if(tiles.ContainsKey(neighbors[i]) && tiles.ContainsKey(neighbors[j])
+                //Check that the intersection has at least one producing tile
+                && !(tile.Value.number == 0 && tiles[neighbors[i]].number == 0 && tiles[neighbors[j]].number == 0))
                 {
                     intersections.TryAdd(new VertexPosition(tile.Key, neighbors[i], neighbors[j]), new Vertex());
                 }

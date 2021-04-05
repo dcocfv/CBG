@@ -12,11 +12,29 @@ public static class production
 
 public static class analyzer
 {
+    private static double average(List<ushort> values)
+    {
+        double sum = 0.0;
+        foreach(ushort val in values)
+            sum += val;
+        return sum / values.Count;
+    }
+
+    private static double variance(List<ushort> values)
+    {
+        double avg = average(values);
+        double sum_squares = 0.0;
+        foreach (ushort val in values)
+            sum_squares += Math.Pow((val - avg), 2.0);
+        return sum_squares / (values.Count - 1);
+    }
+
     //Checks all intersections of the given board, and compares the variance of production across the board
     //Returns whether the variance is within certain bounds (low)
-    public static bool acceptable_variance(Board game_board)
+    public static bool acceptable_variance(Board game_board, double variance_limit)
     {
-        float sum = 0;
+        //Find all intersection production values and add them to a list
+        List<ushort> intersection_production_values = new List<ushort>();
         foreach(KeyValuePair<VertexPosition, Vertex> intersection in game_board.intersections)
         {
             ushort intersection_production = 0;
@@ -27,17 +45,13 @@ public static class analyzer
                 else if(game_board.tiles[neighbor].type == Resource.harbor_brick || game_board.tiles[neighbor].type == Resource.harbor_ore || game_board.tiles[neighbor].type == Resource.harbor_sheep || game_board.tiles[neighbor].type == Resource.harbor_wheat || game_board.tiles[neighbor].type == Resource.harbor_wood || game_board.tiles[neighbor].type == Resource.harbor_any)
                     intersection_production += 3; //Placeholder value for harbors
             }
-            sum += intersection_production;
+            intersection_production_values.Add(intersection_production);
         }
 
+        //Console.WriteLine("Variance limit: " + variance_limit);
+        System.Diagnostics.Debug.WriteLine("Actual variance: " + variance(intersection_production_values));
 
-        Console.WriteLine("BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB");
-
-        float avg = sum / game_board.intersections.Count;
-        Console.WriteLine("Sum:  " + sum);
-        Console.WriteLine("# of intersections:  " + game_board.intersections.Count);
-        Console.WriteLine("Average production:  " + avg);
-
-        return true;
+        //Find the variance of the production values and compare them to the acceptable bounds
+        return variance(intersection_production_values) < variance_limit;
     }
 }

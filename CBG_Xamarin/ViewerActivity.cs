@@ -53,12 +53,15 @@ namespace CBG_Xamarin
             BoardGenerationConfig foo = new BoardGenerationConfig("foo");
             foo.save_xml();
 
-            //TODO: probably load the board in the generator, and send the actual board to here once generated
-            //For now, create an abritrary board for testing
-            Board testBoard = new Board("base_3-4");
-
             //TODO: move this to generator with board gen
-            analyzer.acceptable_variance(testBoard);
+            Board testBoard;
+            do
+            {
+                //TODO: probably load the board in the generator, and send the actual board to here once generated
+                //For now, create an abritrary board for testing
+                testBoard = new Board("base_3-4");
+            }
+            while(!analyzer.acceptable_variance(testBoard, 5));
 
             //Get a variable for the main relative layout
             RelativeLayout r = FindViewById<RelativeLayout>(Resource.Id.board);

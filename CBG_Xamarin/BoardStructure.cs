@@ -116,8 +116,8 @@ public class Hex
     {
         Random rand = new Random();
 
-        Console.WriteLine("res count: " + tileset.resource_pool.Count);
-        Console.WriteLine("num count: " + tileset.number_pool.Count);
+        //Console.WriteLine("res count: " + tileset.resource_pool.Count);
+        //Console.WriteLine("num count: " + tileset.number_pool.Count);
 
         type = tileset.resource_pool[rand.Next(tileset.resource_pool.Count)];
         tileset.resource_pool.RemoveAt(tileset.resource_pool.FindIndex(res => res == type));

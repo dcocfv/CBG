@@ -134,14 +134,14 @@ namespace CBG_Xamarin
                 Console.WriteLine("Wood: " + WoodBar.Progress);
 
                 SeekBar VarianceBar = FindViewById<SeekBar>(Resource.Id.VarianceBar);
-                Console.WriteLine("Variance: " + VarianceBar.Progress);
+                Console.WriteLine("Variance: " + VarianceBar.Progress + 3);
 
                 //Create an intent to launch the Viewer Activity
                 Intent viewerIntent = new Intent(this, typeof(ViewerActivity));
 
                 //Add the necessary data to the intent
                 viewerIntent.PutExtra("NewBoard", true);
-                viewerIntent.PutExtra("Variance", VarianceBar.Progress);
+                viewerIntent.PutExtra("Variance", VarianceBar.Progress + 3);
 
                 //Start the activity
                 StartActivity(viewerIntent);

@@ -155,9 +155,9 @@
             android:layout_height="wrap_content"
             android:layout_alignBottom="@id/Variance"
             android:layout_toRightOf="@id/Variance"
-            android:max="7"
-            android:min="3"
-            android:progress="5"
+            android:max="4"
+            android:min="0"
+            android:progress="2"
             android:visibility="gone"
             android:id="@+id/VarianceBar" />
 

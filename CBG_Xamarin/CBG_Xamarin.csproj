@@ -62,6 +62,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BoardStructure.cs" />
+    <Compile Include="Analysis.cs" />
     <Compile Include="GeneratorActivity.cs" />
     <Compile Include="ViewerActivity.cs" />
     <Compile Include="Resources\Resource.designer.cs" />

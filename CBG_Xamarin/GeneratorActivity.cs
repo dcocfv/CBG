@@ -111,8 +111,8 @@ namespace CBG_Xamarin
                 }
             };
 
-                //Get the generate board button
-                Button GenerateBoard = FindViewById<Button>(Resource.Id.GenerateBoard);
+            //Get the generate board button
+            Button GenerateBoard = FindViewById<Button>(Resource.Id.GenerateBoard);
 
             //Add functionality to the generate board button
             GenerateBoard.Click += (sender, e) =>

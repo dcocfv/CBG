@@ -7,6 +7,7 @@
     android:minHeight="25px"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:animateLayoutChanges="true"
     android:id="@+id/menuButtons" >
         <Button
             android:text="Viewer"
@@ -31,10 +32,150 @@
             android:layout_height="wrap_content"
             android:layout_toRightOf="@id/Stats"
             android:id="@+id/Save_Load"/>
-    <TextView
-        android:text="GENERATOR SCREEN (WIP)"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:id="@+id/textView1" />
+        
+        <Button
+            android:text="Production Distribution"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/Viewer"
+            android:id="@+id/ResourceOptions"/>
+
+        <TextView
+            android:text="Brick"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/ResourceOptions"
+            android:textStyle="bold"
+            android:visibility="gone"
+            android:id="@+id/Brick" />
+        <SeekBar
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@id/Brick"
+            android:layout_toRightOf="@id/Wheat"
+            android:max="100"
+            android:min="0"
+            android:progress="50"
+            android:visibility="gone"
+            android:id="@+id/BrickBar" />
+
+        <TextView
+            android:text="Ore"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/Brick"
+            android:textStyle="bold"
+            android:visibility="gone"
+            android:id="@+id/Ore" />
+        <SeekBar
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@id/Ore"
+            android:layout_toRightOf="@id/Wheat"
+            android:max="100"
+            android:min="0"
+            android:progress="50"
+            android:visibility="gone"
+            android:id="@+id/OreBar" />
+
+        <TextView
+            android:text="Sheep"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/Ore"
+            android:textStyle="bold"
+            android:visibility="gone"
+            android:id="@+id/Sheep" />
+        <SeekBar
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@id/Sheep"
+            android:layout_toRightOf="@id/Wheat"
+            android:max="100"
+            android:min="0"
+            android:progress="50"
+            android:visibility="gone"
+            android:id="@+id/SheepBar" />
+
+        <TextView
+            android:text="Wheat"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/Sheep"
+            android:textStyle="bold"
+            android:visibility="gone"
+            android:id="@+id/Wheat" />
+        <SeekBar
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@id/Wheat"
+            android:layout_toRightOf="@id/Wheat"
+            android:max="100"
+            android:min="0"
+            android:progress="50"
+            android:visibility="gone"
+            android:id="@+id/WheatBar" />
+
+        <TextView
+            android:text="Wood"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/Wheat"
+            android:textStyle="bold"
+            android:visibility="gone"
+            android:id="@+id/Wood" />
+        <SeekBar
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@id/Wood"
+            android:layout_toRightOf="@id/Wheat"
+            android:max="100"
+            android:min="0"
+            android:progress="50"
+            android:visibility="gone"
+            android:id="@+id/WoodBar" />
+        
+        <TextView
+            android:text="Variance"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/OtherOptions"
+            android:textStyle="bold"
+            android:visibility="gone"
+            android:id="@+id/Variance" />
+        <SeekBar
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@id/Variance"
+            android:layout_toRightOf="@id/Variance"
+            android:max="7"
+            android:min="3"
+            android:progress="5"
+            android:visibility="gone"
+            android:id="@+id/VarianceBar" />
+
+        <Button
+            android:text="Intersection Options"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/Wood"
+            android:id="@+id/OtherOptions"/>
+
+        <Button
+            android:text="Generate New Board"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_alignParentBottom="true"
+            android:id="@+id/GenerateBoard" />
+    
+
 </RelativeLayout>

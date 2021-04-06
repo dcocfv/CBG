@@ -53,6 +53,14 @@ namespace CBG_Xamarin
             BoardGenerationConfig foo = new BoardGenerationConfig("foo");
             foo.save_xml();
 
+            int variance = 5;
+
+            //Get data given from GeneratorActivity
+            if(!(Intent.Extras is null))
+            {
+                variance = Intent.Extras.GetInt("Variance");
+            }
+
             //TODO: move this to generator with board gen
             Board testBoard;
             do
@@ -61,7 +69,7 @@ namespace CBG_Xamarin
                 //For now, create an abritrary board for testing
                 testBoard = new Board("base_3-4");
             }
-            while(!analyzer.acceptable_variance(testBoard, 5));
+            while(!analyzer.acceptable_variance(testBoard, variance));
 
             //Get a variable for the main relative layout
             RelativeLayout r = FindViewById<RelativeLayout>(Resource.Id.board);

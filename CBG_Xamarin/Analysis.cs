@@ -54,4 +54,38 @@ public static class analyzer
         //Find the variance of the production values and compare them to the acceptable bounds
         return variance(intersection_production_values) < variance_limit;
     }
+
+    // Checks the total resource production of the given board, comparing the total resource production of
+    // each of the main 5 individual resources to make sure they are within the variance_limit. In reality, not
+    // recommended as a setting for typical games, because unbalanced resources are a fun part of the game
+    public static bool acceptable_distribution_tile(Board game_board, double variance_limit)
+    {
+        ushort[] resource_production_values = new ushort[5];
+        foreach(KeyValuePair<HexPosition, Hex> tile in game_board.tiles)
+        {
+            switch(tile.Value.type)
+            {
+                case Resource.brick:
+                    resource_production_values[0] += production.production_from_number(tile.Value.number);
+                    break;
+                case Resource.wood:
+                    resource_production_values[1] += production.production_from_number(tile.Value.number);
+                    break;
+                case Resource.ore:
+                    resource_production_values[2] += production.production_from_number(tile.Value.number);
+                    break;
+                case Resource.sheep:
+                    resource_production_values[3] += production.production_from_number(tile.Value.number);
+                    break;
+                case Resource.wheat:
+                    resource_production_values[4] += production.production_from_number(tile.Value.number);
+                    break;
+            }
+        }
+
+        System.Diagnostics.Debug.WriteLine("Tile Variance limit: " + variance_limit);
+        System.Diagnostics.Debug.WriteLine("Tile Actual variance: " + variance(new List<ushort>(resource_production_values)));
+
+        return variance(new List<ushort>(resource_production_values)) < variance_limit;
+    }
 }

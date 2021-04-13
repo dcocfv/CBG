@@ -296,7 +296,6 @@ public class Board
     //Map bounds constructor (creates an empty map of specified size)
     public Board(short x_lower, short x_upper, short y_lower, short y_upper, short z_lower, short z_upper)
     {
-
         TileGenerationSet defaultGenSet = new TileGenerationSet();
 
         //Add all tiles to the board

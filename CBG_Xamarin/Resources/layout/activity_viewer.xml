@@ -8,30 +8,11 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:id="@+id/menuButtons" >
-        <Button
-            android:text="Viewer"
+        <ImageButton
+            android:src="@android:drawable/ic_menu_gallery"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/Viewer"/>
-        <Button
-            android:text="Generator"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_toRightOf="@id/Viewer"
-            android:id="@+id/Generator"/>
-        <Button
-            android:text="Stats"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_toRightOf="@id/Generator"
-            android:id="@+id/Stats"/>
-        <Button
-            android:text="Save/Load"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_toRightOf="@id/Stats"
-            android:id="@+id/Save_Load"/>
-
+            android:id="@+id/backButton" />
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"

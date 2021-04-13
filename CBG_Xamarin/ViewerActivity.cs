@@ -70,7 +70,8 @@ namespace CBG_Xamarin
                 //For now, create an abritrary board for testing
                 testBoard = new Board("base_3-4");
             }
-            while(!analyzer.acceptable_variance(testBoard, variance));
+            while(!analyzer.acceptable_variance(testBoard, variance) || 
+                  !analyzer.acceptable_distribution_tile(testBoard, 5));
 
             //Get a variable for the main relative layout
             RelativeLayout r = FindViewById<RelativeLayout>(Resource.Id.board);

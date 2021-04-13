@@ -6,6 +6,7 @@ using Android.Widget;
 using System;
 using System.Collections.Generic;
 using Android.Views;
+using Android.Content.Res;
 
 namespace CBG_Xamarin
 {
@@ -53,6 +54,14 @@ namespace CBG_Xamarin
             BoardGenerationConfig foo = new BoardGenerationConfig("foo");
             foo.save_xml();
 
+            int variance = 5;
+
+            //Get data given from GeneratorActivity
+            if(!(Intent.Extras is null))
+            {
+                variance = Intent.Extras.GetInt("Variance");
+            }
+
             //TODO: move this to generator with board gen
             Board testBoard;
             do
@@ -61,13 +70,70 @@ namespace CBG_Xamarin
                 //For now, create an abritrary board for testing
                 testBoard = new Board("base_3-4");
             }
-            while(!analyzer.acceptable_variance(testBoard, 5));
+            while(!analyzer.acceptable_variance(testBoard, variance));
 
             //Get a variable for the main relative layout
             RelativeLayout r = FindViewById<RelativeLayout>(Resource.Id.board);
 
-            //The size (height and width) in pixels of the images to be displayed on screen
-            var dimensions = 200;
+            //Get the width and height of our screen (in pixels)
+            int width = Resources.DisplayMetrics.WidthPixels;
+            int height = Resources.DisplayMetrics.HeightPixels;
+
+            Console.WriteLine("WIDTH: " + width);
+            Console.WriteLine("HEIGHT: " + height);
+
+            //Find the max and min values in the x direction on the board
+            int max = 0;
+            int min = 0;
+            bool first = true;
+
+            foreach (KeyValuePair<HexPosition, Hex> tile in testBoard.tiles)
+            {
+                if(first || tile.Key.x_pos > max)
+                {
+                    first = false;
+                    max = tile.Key.x_pos;
+                }
+                if (first || tile.Key.x_pos < min)
+                {
+                    first = false;
+                    min = tile.Key.x_pos;
+                }
+            }
+
+            //Calculate the board width (its complicated because of flat tops)
+            double boardWidth = 1;
+            for(int i = 1; i < max; i++)
+            {
+                if(i%2 == 0)
+                {
+                    boardWidth += 1;
+                }
+
+                if(i%2 == 1)
+                {
+                    boardWidth += 0.5;
+                }
+            }
+            boardWidth += 0.75;
+            for (int i = -1; i > min; i--)
+            {
+                if (((-1) * i) % 2 == 0)
+                {
+                    boardWidth += 1;
+                }
+
+                if (((-1) * i) % 2 == 1)
+                {
+                    boardWidth += 0.5;
+                }
+            }
+            boardWidth += 0.75;
+
+            Console.WriteLine("BOARDWIDTH: " + boardWidth);
+
+            //The size (height and width) in pixels of the images to be displayed on screen (we celiing it so it doesn't go 1 pixel off screen)
+            int dimensions = (int)Math.Ceiling(width/boardWidth);
 
             //The "size" of the hexagons (used in positioning the hexes in the grid)
             var size = dimensions / 2;

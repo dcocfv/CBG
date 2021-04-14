@@ -9,36 +9,51 @@
     android:layout_height="match_parent"
     android:animateLayoutChanges="true"
     android:id="@+id/menuButtons" >
-        <Button
-            android:text="Viewer"
+    <ImageButton
+            android:src="@android:drawable/ic_menu_gallery"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/Viewer"/>
-        <Button
-            android:text="Generator"
+            android:id="@+id/backButton" />
+        <TextView
+            android:text="If you go back to the config load screen you will lose these generator settings.\nDo you want to continue?"
+            android:textAppearance="?android:attr/textAppearanceLarge"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_toRightOf="@id/Viewer"
-            android:id="@+id/Generator"/>
+            android:layout_centerHorizontal="true"
+            android:layout_below="@id/backButton"
+            android:visibility="gone"
+            android:elevation="1dp"
+            android:background="@color/material_grey_300"
+            android:id="@+id/ContinuePrompt" />
         <Button
-            android:text="Stats"
+            android:text="Yes"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_toRightOf="@id/Generator"
-            android:id="@+id/Stats"/>
+            android:layout_below="@id/ContinuePrompt"
+            android:visibility="gone"
+            android:clickable="false"
+            android:elevation="1dp"
+            android:id="@+id/Yes" />
         <Button
-            android:text="Save/Load"
+            android:text="No"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_toRightOf="@id/Stats"
-            android:id="@+id/Save_Load"/>
-        
+            android:layout_below="@id/ContinuePrompt"
+            android:visibility="gone"
+            android:clickable="false"
+            android:layout_toRightOf="@id/Yes"
+            android:elevation="1dp"
+            android:id="@+id/No" />
+
+
+
+
         <Button
             android:text="Production Distribution"
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/Viewer"
+            android:layout_below="@id/Yes"
             android:id="@+id/ResourceOptions"/>
 
         <TextView

@@ -7,10 +7,11 @@ using System;
 using System.Collections.Generic;
 using Android.Views;
 using Android.Content.Res;
+using Android.Content;
 
 namespace CBG_Xamarin
 {
-    [Activity(Label = "ViewerActivity", MainLauncher = true)]
+    [Activity(Label = "ViewerActivity")]
     public class ViewerActivity : Activity
     {
         protected override void OnCreate(Bundle savedInstanceState)
@@ -20,47 +21,86 @@ namespace CBG_Xamarin
             // Set our view from the "main" layout resource
             SetContentView(Resource.Layout.activity_viewer);
 
-            //Get the navigation buttons
-            Button Viewer = FindViewById<Button>(Resource.Id.Viewer);
-            Button Generator = FindViewById<Button>(Resource.Id.Generator);
-            Button Stats = FindViewById<Button>(Resource.Id.Stats);
-            Button Save_Load = FindViewById<Button>(Resource.Id.Save_Load);
-
-            //Set their initial colors
-            Viewer.SetBackgroundColor(Android.Graphics.Color.DarkGray);
-            Generator.SetBackgroundColor(Android.Graphics.Color.Gray);
-            Stats.SetBackgroundColor(Android.Graphics.Color.Gray);
-            Save_Load.SetBackgroundColor(Android.Graphics.Color.Gray);
-
-            //Add functionality to all the navigation buttons
-            Generator.Click += (sender, e) =>
-            {
-                Console.WriteLine("Generator");
-                StartActivity(typeof(GeneratorActivity));
-            };
-            Stats.Click += (sender, e) =>
-            {
-                Console.WriteLine("Stats");
-            };
-            Save_Load.Click += (sender, e) =>
-            {
-                Console.WriteLine("Save_Load");
-            };
-
-
             //Test code for map saving
             //Currently running the app twice from the same build sometimes crashes because of this saving twice
             //If you wish to generate multiple boards by restarting the app, build once, then comment out these two lines and build again
             BoardGenerationConfig foo = new BoardGenerationConfig("foo");
             foo.save_xml();
 
-            int variance = 5;
-
             //Get data given from GeneratorActivity
+            int variance = 5;
+            int brick = 50;
+            int ore = 50;
+            int sheep = 50;
+            int wheat = 50;
+            int wood = 50;
             if(!(Intent.Extras is null))
             {
                 variance = Intent.Extras.GetInt("Variance");
+                brick = Intent.Extras.GetInt("Brick");
+                ore = Intent.Extras.GetInt("Ore");
+                sheep = Intent.Extras.GetInt("Sheep");
+                wheat = Intent.Extras.GetInt("Wheat");
+                wood = Intent.Extras.GetInt("Wood");
             }
+
+            //Get the back button
+            ImageButton backButton = FindViewById<ImageButton>(Resource.Id.backButton);
+
+            //Setup functionality for back button
+            backButton.Click += (sender, e) =>
+            {
+                //Make this button not clickable and gone
+                backButton.Clickable = false;
+                backButton.Visibility = ViewStates.Gone;
+                //Make the prompt visible and clickable
+                TextView ContinuePrompt = FindViewById<TextView>(Resource.Id.ContinuePrompt);
+                ContinuePrompt.Visibility = ViewStates.Visible;
+                Button Yes = FindViewById<Button>(Resource.Id.Yes);
+                Yes.Visibility = ViewStates.Visible;
+                Yes.Clickable = true;
+                Button No = FindViewById<Button>(Resource.Id.No);
+                No.Visibility = ViewStates.Visible;
+                No.Clickable = true;
+            };
+
+            //Get the yes button
+            Button Yes = FindViewById<Button>(Resource.Id.Yes);
+            //Add functionlity to it
+            Yes.Click += (sender, e) =>
+            {
+                //Create an intent to launch the Generator Activity
+                Intent generatorIntent = new Intent(this, typeof(GeneratorActivity));
+
+                //Add the necessary data to the intent
+                generatorIntent.PutExtra("Variance", variance);
+                generatorIntent.PutExtra("Brick", brick + 1);
+                generatorIntent.PutExtra("Ore", ore + 1);
+                generatorIntent.PutExtra("Sheep", sheep + 1);
+                generatorIntent.PutExtra("Wheat", wheat + 1);
+                generatorIntent.PutExtra("Wood", wood + 1);
+
+                //Start the activity
+                StartActivity(generatorIntent);
+            };
+
+            //Get the No button
+            Button No = FindViewById<Button>(Resource.Id.No);
+            //Setup functionaliy of this button
+            No.Click += (sender, e) =>
+            {
+                //reset the state of this activity
+                ImageButton backButton = FindViewById<ImageButton>(Resource.Id.backButton);
+                backButton.Clickable = true;
+                backButton.Visibility = ViewStates.Visible;
+                TextView ContinuePrompt = FindViewById<TextView>(Resource.Id.ContinuePrompt);
+                ContinuePrompt.Visibility = ViewStates.Gone;
+                Yes.Visibility = ViewStates.Gone;
+                Yes.Clickable = false;
+                Button No = FindViewById<Button>(Resource.Id.No);
+                No.Visibility = ViewStates.Gone;
+                No.Clickable = false;
+            };
 
             //TODO: move this to generator with board gen
             Board testBoard;

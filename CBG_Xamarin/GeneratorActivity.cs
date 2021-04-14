@@ -21,38 +21,109 @@ namespace CBG_Xamarin
             // Set our view from the "main" layout resource
             SetContentView(Resource.Layout.activity_generator);
 
-            //Get the navigation buttons
-            Button Viewer = FindViewById<Button>(Resource.Id.Viewer);
-            Button Generator = FindViewById<Button>(Resource.Id.Generator);
-            Button Stats = FindViewById<Button>(Resource.Id.Stats);
-            Button Save_Load = FindViewById<Button>(Resource.Id.Save_Load);
-
-            //Set their initial colors
-            Viewer.SetBackgroundColor(Android.Graphics.Color.Gray);
-            Generator.SetBackgroundColor(Android.Graphics.Color.DarkGray);
-            Stats.SetBackgroundColor(Android.Graphics.Color.Gray);
-            Save_Load.SetBackgroundColor(Android.Graphics.Color.Gray);
-
-            //Add functionality to all the navigation buttons
-            Viewer.Click += (sender, e) =>
+            //Get data input into this activity
+            if (!(Intent.Extras is null))
             {
-                //Create an intent to launch the Viewer Activity
-                Intent viewerIntent = new Intent(this, typeof(ViewerActivity));
+                //Get the VarianceBar Progress and update it accordingly
+                int variance = Intent.Extras.GetInt("Variance");
+                int brick = Intent.Extras.GetInt("Brick");
+                int ore = Intent.Extras.GetInt("Ore");
+                int wheat = Intent.Extras.GetInt("Wheat");
+                int sheep = Intent.Extras.GetInt("Sheep");
+                int wood = Intent.Extras.GetInt("Wood");
+                if (variance != 0)
+                {
+                    Console.WriteLine("VARIANCE INPUT GENERATOR: " + variance);
+                    SeekBar VarianceBar = FindViewById<SeekBar>(Resource.Id.VarianceBar);
+                    VarianceBar.Progress = variance - 3;
+                }
+                if(brick != 0)
+                {
+                    brick -= 1;
+                    Console.WriteLine("BRICK INPUT GENERATOR: " + brick);
+                    SeekBar BrickBar = FindViewById<SeekBar>(Resource.Id.BrickBar);
+                    BrickBar.Progress = brick;
+                }
+                if(ore != 0)
+                {
+                    ore -= 1;
+                    Console.WriteLine("ORE INPUT GENERATOR: " + ore);
+                    SeekBar OreBar = FindViewById<SeekBar>(Resource.Id.OreBar);
+                    OreBar.Progress = ore;
+                }
+                if(wheat != 0)
+                {
+                    wheat -= 1;
+                    Console.WriteLine("WHEAT INPUT GENERATOR: " + wheat);
+                    SeekBar WheatBar = FindViewById<SeekBar>(Resource.Id.WheatBar);
+                    WheatBar.Progress = wheat;
+                }
+                if(sheep != 0)
+                {
+                    sheep -= 1;
+                    Console.WriteLine("SHEEP INPUT GENERATOR: " + sheep);
+                    SeekBar SheepBar = FindViewById<SeekBar>(Resource.Id.SheepBar);
+                    SheepBar.Progress = sheep;
+                }
+                if(wood != 0)
+                {
+                    wood -= 1;
+                    Console.WriteLine("WOOD INPUT GENERATOR: " + wood);
+                    SeekBar WoodBar = FindViewById<SeekBar>(Resource.Id.WoodBar);
+                    WoodBar.Progress = wood;
+                }
+            }
 
-                //Add the necessary data to the intent
-                viewerIntent.PutExtra("NewBoard", false);
-                viewerIntent.PutExtra("Variance", 5);
+            //Get the back button
+            ImageButton backButton = FindViewById<ImageButton>(Resource.Id.backButton);
+
+            //Setup functionality for back button
+            backButton.Click += (sender, e) =>
+            {
+                //Make this button not clickable and gone
+                backButton.Clickable = false;
+                backButton.Visibility = ViewStates.Gone;
+                //Make the prompt visible and clickable
+                TextView ContinuePrompt = FindViewById<TextView>(Resource.Id.ContinuePrompt);
+                ContinuePrompt.Visibility = ViewStates.Visible;
+                Button Yes = FindViewById<Button>(Resource.Id.Yes);
+                Yes.Visibility = ViewStates.Visible;
+                Yes.Clickable = true;
+                Button No = FindViewById<Button>(Resource.Id.No);
+                No.Visibility = ViewStates.Visible;
+                No.Clickable = true;
+            };
+
+            //Get the yes button
+            Button Yes = FindViewById<Button>(Resource.Id.Yes);
+            //Add functionlity to it
+            Yes.Click += (sender, e) =>
+            {
+                //Create an intent to launch the SaveLoad Activity
+                Intent saveLoadIntent = new Intent(this, typeof(SaveLoadActivity));
+
+                //TODO: Add the necessary data to the intent
 
                 //Start the activity
-                StartActivity(viewerIntent);
+                StartActivity(saveLoadIntent);
             };
-            Stats.Click += (sender, e) =>
+
+            //Get the No button
+            Button No = FindViewById<Button>(Resource.Id.No);
+            //Setup functionaliy of this button
+            No.Click += (sender, e) =>
             {
-                Console.WriteLine("Stats");
-            };
-            Save_Load.Click += (sender, e) =>
-            {
-                Console.WriteLine("Save_Load");
+                //reset the state of this activity
+                ImageButton backButton = FindViewById<ImageButton>(Resource.Id.backButton);
+                backButton.Clickable = true;
+                backButton.Visibility = ViewStates.Visible;
+                TextView ContinuePrompt = FindViewById<TextView>(Resource.Id.ContinuePrompt);
+                ContinuePrompt.Visibility = ViewStates.Gone;
+                Yes.Visibility = ViewStates.Gone;
+                Yes.Clickable = false;
+                Button No = FindViewById<Button>(Resource.Id.No);
+                No.Visibility = ViewStates.Gone;
+                No.Clickable = false;
             };
 
             //Add functionality to Resource Options buton
@@ -141,8 +212,12 @@ namespace CBG_Xamarin
                 Intent viewerIntent = new Intent(this, typeof(ViewerActivity));
 
                 //Add the necessary data to the intent
-                viewerIntent.PutExtra("NewBoard", true);
                 viewerIntent.PutExtra("Variance", varianceBarProgress);
+                viewerIntent.PutExtra("Brick", BrickBar.Progress);
+                viewerIntent.PutExtra("Ore", OreBar.Progress);
+                viewerIntent.PutExtra("Sheep", SheepBar.Progress);
+                viewerIntent.PutExtra("Wheat", WheatBar.Progress);
+                viewerIntent.PutExtra("Wood", WoodBar.Progress);
 
                 //Start the activity
                 StartActivity(viewerIntent);

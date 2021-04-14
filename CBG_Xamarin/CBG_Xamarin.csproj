@@ -64,6 +64,7 @@
     <Compile Include="BoardStructure.cs" />
     <Compile Include="Analysis.cs" />
     <Compile Include="GeneratorActivity.cs" />
+    <Compile Include="SaveLoadActivity.cs" />
     <Compile Include="ViewerActivity.cs" />
     <Compile Include="Resources\Resource.designer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -183,6 +184,11 @@
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\drawable\HarborPiece_Wool.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\layout\activity_saveload.xml">
+      <SubType>Designer</SubType>
+    </AndroidResource>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it.

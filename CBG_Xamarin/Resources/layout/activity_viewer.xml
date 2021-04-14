@@ -23,7 +23,7 @@
             android:layout_below="@id/backButton"
             android:visibility="gone"
             android:elevation="1dp"
-            android:background="@color/material_grey_100"
+            android:background="@color/material_grey_300"
             android:id="@+id/ContinuePrompt" />
         <Button
             android:text="Yes"

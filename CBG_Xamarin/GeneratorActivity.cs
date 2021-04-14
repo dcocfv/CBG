@@ -74,7 +74,57 @@ namespace CBG_Xamarin
                 }
             }
 
+            //Get the back button
+            ImageButton backButton = FindViewById<ImageButton>(Resource.Id.backButton);
 
+            //Setup functionality for back button
+            backButton.Click += (sender, e) =>
+            {
+                //Make this button not clickable and gone
+                backButton.Clickable = false;
+                backButton.Visibility = ViewStates.Gone;
+                //Make the prompt visible and clickable
+                TextView ContinuePrompt = FindViewById<TextView>(Resource.Id.ContinuePrompt);
+                ContinuePrompt.Visibility = ViewStates.Visible;
+                Button Yes = FindViewById<Button>(Resource.Id.Yes);
+                Yes.Visibility = ViewStates.Visible;
+                Yes.Clickable = true;
+                Button No = FindViewById<Button>(Resource.Id.No);
+                No.Visibility = ViewStates.Visible;
+                No.Clickable = true;
+            };
+
+            //Get the yes button
+            Button Yes = FindViewById<Button>(Resource.Id.Yes);
+            //Add functionlity to it
+            Yes.Click += (sender, e) =>
+            {
+                //Create an intent to launch the SaveLoad Activity
+                Intent saveLoadIntent = new Intent(this, typeof(SaveLoadActivity));
+
+                //TODO: Add the necessary data to the intent
+
+                //Start the activity
+                StartActivity(saveLoadIntent);
+            };
+
+            //Get the No button
+            Button No = FindViewById<Button>(Resource.Id.No);
+            //Setup functionaliy of this button
+            No.Click += (sender, e) =>
+            {
+                //reset the state of this activity
+                ImageButton backButton = FindViewById<ImageButton>(Resource.Id.backButton);
+                backButton.Clickable = true;
+                backButton.Visibility = ViewStates.Visible;
+                TextView ContinuePrompt = FindViewById<TextView>(Resource.Id.ContinuePrompt);
+                ContinuePrompt.Visibility = ViewStates.Gone;
+                Yes.Visibility = ViewStates.Gone;
+                Yes.Clickable = false;
+                Button No = FindViewById<Button>(Resource.Id.No);
+                No.Visibility = ViewStates.Gone;
+                No.Clickable = false;
+            };
 
             //Add functionality to Resource Options buton
             Button ResourceOptions = FindViewById<Button>(Resource.Id.ResourceOptions);

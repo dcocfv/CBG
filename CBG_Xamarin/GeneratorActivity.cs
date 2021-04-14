@@ -11,7 +11,7 @@ using System.Text;
 
 namespace CBG_Xamarin
 {
-    [Activity(Label = "GeneratorActivity", MainLauncher = true)]
+    [Activity(Label = "GeneratorActivity")]
     public class GeneratorActivity : Activity
     {
         protected override void OnCreate(Bundle savedInstanceState)

@@ -50,19 +50,56 @@ namespace CBG_Xamarin
             //Setup functionality for back button
             backButton.Click += (sender, e) =>
             {
+                //Make this button not clickable and gone
+                backButton.Clickable = false;
+                backButton.Visibility = ViewStates.Gone;
+                //Make the prompt visible and clickable
+                TextView ContinuePrompt = FindViewById<TextView>(Resource.Id.ContinuePrompt);
+                ContinuePrompt.Visibility = ViewStates.Visible;
+                Button Yes = FindViewById<Button>(Resource.Id.Yes);
+                Yes.Visibility = ViewStates.Visible;
+                Yes.Clickable = true;
+                Button No = FindViewById<Button>(Resource.Id.No);
+                No.Visibility = ViewStates.Visible;
+                No.Clickable = true;
+            };
+
+            //Get the yes button
+            Button Yes = FindViewById<Button>(Resource.Id.Yes);
+            //Add functionlity to it
+            Yes.Click += (sender, e) =>
+            {
                 //Create an intent to launch the Generator Activity
                 Intent generatorIntent = new Intent(this, typeof(GeneratorActivity));
 
                 //Add the necessary data to the intent
                 generatorIntent.PutExtra("Variance", variance);
-                generatorIntent.PutExtra("Brick", brick+1);
-                generatorIntent.PutExtra("Ore", ore+1);
-                generatorIntent.PutExtra("Sheep", sheep+1);
-                generatorIntent.PutExtra("Wheat", wheat+1);
-                generatorIntent.PutExtra("Wood", wood+1);
+                generatorIntent.PutExtra("Brick", brick + 1);
+                generatorIntent.PutExtra("Ore", ore + 1);
+                generatorIntent.PutExtra("Sheep", sheep + 1);
+                generatorIntent.PutExtra("Wheat", wheat + 1);
+                generatorIntent.PutExtra("Wood", wood + 1);
 
                 //Start the activity
                 StartActivity(generatorIntent);
+            };
+
+            //Get the No button
+            Button No = FindViewById<Button>(Resource.Id.No);
+            //Setup functionaliy of this button
+            No.Click += (sender, e) =>
+            {
+                //reset the state of this activity
+                ImageButton backButton = FindViewById<ImageButton>(Resource.Id.backButton);
+                backButton.Clickable = true;
+                backButton.Visibility = ViewStates.Visible;
+                TextView ContinuePrompt = FindViewById<TextView>(Resource.Id.ContinuePrompt);
+                ContinuePrompt.Visibility = ViewStates.Gone;
+                Yes.Visibility = ViewStates.Gone;
+                Yes.Clickable = false;
+                Button No = FindViewById<Button>(Resource.Id.No);
+                No.Visibility = ViewStates.Gone;
+                No.Clickable = false;
             };
 
             //TODO: move this to generator with board gen

@@ -21,12 +21,6 @@ namespace CBG_Xamarin
             // Set our view from the "main" layout resource
             SetContentView(Resource.Layout.activity_viewer);
 
-            //Test code for map saving
-            //Currently running the app twice from the same build sometimes crashes because of this saving twice
-            //If you wish to generate multiple boards by restarting the app, build once, then comment out these two lines and build again
-            BoardGenerationConfig foo = new BoardGenerationConfig("foo");
-            foo.save_xml();
-
             //Get data given from GeneratorActivity
             int variance = 5;
             int brick = 50;
@@ -108,7 +102,7 @@ namespace CBG_Xamarin
             {
                 //TODO: probably load the board in the generator, and send the actual board to here once generated
                 //For now, create an abritrary board for testing
-                testBoard = new Board("base_3-4");
+                testBoard = new Board("seafarers_4_2");
             }
             while(!analyzer.acceptable_variance(testBoard, variance) || 
                   !analyzer.acceptable_distribution_tile(testBoard, 5));

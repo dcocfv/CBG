@@ -144,148 +144,6 @@ public class TileGenerationSet
     public List<ushort> number_pool = new List<ushort>();
 
     public TileGenerationSet(){}
-
-    //TODO: probably add functions to this class specifying how to generate the tiles within this group
-}
-
-public class BoardGenerationConfig
-{
-    public string name;
-    public short x_lower, x_upper, y_lower, y_upper, z_lower, z_upper; //Map bounds
-    public List<TileGenerationSet> tile_groups = new List<TileGenerationSet>(); //Tile randomization groups
-
-    public void save_xml()
-    {
-        XmlSerializer serializer = new XmlSerializer(typeof(BoardGenerationConfig));
-        FileStream stream = File.Create(System.Environment.GetFolderPath(System.Environment.SpecialFolder.Personal) + "/" + name + ".xml");
-        serializer.Serialize(stream, this);
-        stream.Dispose();
-    }
-
-    public static BoardGenerationConfig load_xml(string map_name)
-    {
-        XmlSerializer serializer = new XmlSerializer(typeof(BoardGenerationConfig));
-        FileStream stream = File.OpenRead(System.Environment.GetFolderPath(System.Environment.SpecialFolder.Personal) + "/" + map_name + ".xml");
-        BoardGenerationConfig saved_board = (BoardGenerationConfig)serializer.Deserialize(stream);
-        stream.Dispose();
-        return saved_board;
-    }
-
-    //Default constructor (empty) required for xml loading to work
-    public BoardGenerationConfig(){}
-
-    // standard map constructor for TileGeneration, used for default game of Catan, with 19 tiles, hex radius of 2,
-    // standard distribution of hex tiles and chit numbers, with sea and harbors around edge
-    public BoardGenerationConfig(string dummy_parameter)
-    {
-        name = "base_3-4";
-
-        TileGenerationSet main_island = new TileGenerationSet();
-        for (short x = -2; x <= 2; x++)
-        {
-            for (short y = -2; y <= 2; y++)
-            {
-                for (short z = -2; z <= 2; z++)
-                {
-                    if (x + y + z == 0)
-                    {
-                        main_island.location_pool.Add(new HexPosition(x, y, z));
-                    }
-                }
-            }
-        }
-
-        main_island.resource_pool = new List<Resource>()
-        {
-            Resource.ore, Resource.ore, Resource.ore, Resource.brick, Resource.brick, Resource.brick,
-            Resource.wheat, Resource.wheat, Resource.wheat, Resource.wheat, Resource.wood, Resource.wood,
-            Resource.wood, Resource.wood, Resource.sheep, Resource.sheep, Resource.sheep, Resource.sheep,
-            Resource.desert
-        };
-
-        main_island.number_pool = new List<ushort>()
-        {
-            2, 3, 3, 4, 4, 5, 5, 6, 6, 8, 8, 9, 9, 10, 10, 11, 11, 12
-        };
-
-
-
-        TileGenerationSet harbors = new TileGenerationSet();
-        harbors.location_pool.Add(new HexPosition(-3, 3, 0, 5));
-        harbors.location_pool.Add(new HexPosition(-1, 3, -2, 0));
-        harbors.location_pool.Add(new HexPosition(1, 2, -3, 0));
-        harbors.location_pool.Add(new HexPosition(3, 0, -3, 1));
-        harbors.location_pool.Add(new HexPosition(3, -2, -1, 2));
-        harbors.location_pool.Add(new HexPosition(2, -3, 1, 2));
-        harbors.location_pool.Add(new HexPosition(0, -3, 3, 3));
-        harbors.location_pool.Add(new HexPosition(-2, -1, 3, 4));
-        harbors.location_pool.Add(new HexPosition(-3, 1, 2, 4));
-
-        harbors.resource_pool = new List<Resource>()
-        {
-            Resource.harbor_brick, Resource.harbor_ore, Resource.harbor_sheep, Resource.harbor_wheat, Resource.harbor_wood, Resource.harbor_any, Resource.harbor_any, Resource.harbor_any, Resource.harbor_any
-        };
-
-
-        
-        TileGenerationSet sea = new TileGenerationSet();
-        sea.location_pool.Add(new HexPosition(-2, 3, -1));
-        sea.location_pool.Add(new HexPosition(0, 3, -3));
-        sea.location_pool.Add(new HexPosition(2, 1, -3));
-        sea.location_pool.Add(new HexPosition(3, -1, -2));
-        sea.location_pool.Add(new HexPosition(3, -3, 0));
-        sea.location_pool.Add(new HexPosition(1, -3, 2));
-        sea.location_pool.Add(new HexPosition(-1, -2, 3));
-        sea.location_pool.Add(new HexPosition(-3, 0, 3));
-        sea.location_pool.Add(new HexPosition(-3, 2, 1));
-
-        sea.resource_pool = new List<Resource>()
-        {
-            Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea
-        };
-
-
-
-        tile_groups.Add(main_island);
-        tile_groups.Add(harbors);
-        tile_groups.Add(sea);
-    }
-
-    //TEST CONSTRUCTOR
-    public BoardGenerationConfig(int dummy_parameter)
-    {
-        name = "test";
-
-        TileGenerationSet main_island = new TileGenerationSet();
-        for (short x = -1; x <= 1; x++)
-        {
-            for (short y = -1; y <= 1; y++)
-            {
-                for (short z = -1; z <= 1; z++)
-                {
-                    if (x + y + z == 0)
-                    {
-                        main_island.location_pool.Add(new HexPosition(x, y, z));
-                    }
-                }
-            }
-        }
-
-        main_island.resource_pool = new List<Resource>()
-        {
-            Resource.ore, Resource.ore, Resource.ore, Resource.brick, Resource.brick, Resource.brick,
-            Resource.wheat, Resource.wheat, Resource.wheat, Resource.wheat, Resource.wood, Resource.wood,
-            Resource.wood, Resource.wood, Resource.sheep, Resource.sheep, Resource.sheep, Resource.sheep,
-            Resource.desert
-        };
-
-        main_island.number_pool = new List<ushort>()
-        {
-            2, 3, 3, 4, 4, 5, 5, 6, 6, 8, 8, 9, 9, 10, 10, 11, 11, 12
-        };
-
-        tile_groups.Add(main_island);
-    }
 }
 
 public class Board
@@ -334,15 +192,14 @@ public class Board
     //Initializes a map with 7 tiles and 6 intersections
     public Board() : this(-1, 1, -1, 1, -1, 1){}
 
-    //Map type constructor
-    //Given the name of the map, fetch the saved map config and load that map
+    //Map name constructor
     public Board(string map_name)
     {
         //Load the board configuration
-        BoardGenerationConfig current_board_config = BoardGenerationConfig.load_xml(map_name);
+        List<TileGenerationSet> current_board_config = Maps.load_map(map_name);
 
         //Add all tiles
-        foreach(var tileset in current_board_config.tile_groups)
+        foreach(var tileset in current_board_config)
         {
             foreach(HexPosition location in tileset.location_pool)
             {

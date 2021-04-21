@@ -15,6 +15,8 @@ namespace CBG_Xamarin
     [Activity(Label = "ViewerActivity")]
     public class ViewerActivity : Activity
     {
+        //This tells the board generation thread to stop if the user uses the back button
+        private bool stop = false;
         async protected override void OnCreate(Bundle savedInstanceState)
         {
             base.OnCreate(savedInstanceState);
@@ -70,6 +72,9 @@ namespace CBG_Xamarin
             //Add functionlity to it
             Yes.Click += (sender, e) =>
             {
+                //Stop the board generation
+                stop = true;
+
                 //Create an intent to launch the Generator Activity
                 Intent generatorIntent = new Intent(this, typeof(GeneratorActivity));
 
@@ -155,6 +160,14 @@ namespace CBG_Xamarin
             RelativeLayout menu = FindViewById<RelativeLayout>(Resource.Id.menuButtons);
             menu.SetBackgroundColor(Android.Graphics.Color.Black);
 
+
+
+
+
+
+
+
+
             //Wait for the board to be generated
             Board testBoard = await Task.Run(() => generateBoard(variance));
 
@@ -167,175 +180,182 @@ namespace CBG_Xamarin
             //Get a variable for the main relative layout
             RelativeLayout r = FindViewById<RelativeLayout>(Resource.Id.board);
 
-            //Get the width and height of our screen (in pixels)
-            int width = Resources.DisplayMetrics.WidthPixels;
-            int height = Resources.DisplayMetrics.HeightPixels;
-
-            Console.WriteLine("WIDTH: " + width);
-            Console.WriteLine("HEIGHT: " + height);
-
-            //Find the max and min values in the x direction on the board
-            int max = 0;
-            int min = 0;
-            bool first = true;
-
-            foreach (KeyValuePair<HexPosition, Hex> tile in testBoard.tiles)
+            if (stop)
             {
-                if (first || tile.Key.x_pos > max)
-                {
-                    first = false;
-                    max = tile.Key.x_pos;
-                }
-                if (first || tile.Key.x_pos < min)
-                {
-                    first = false;
-                    min = tile.Key.x_pos;
-                }
+                Console.WriteLine("STOPPED BECAUSE USER HIT BACK BUTTON");
             }
-
-            //Calculate the board width (its complicated because of flat tops)
-            double boardWidth = 1;
-            for (int i = 1; i < max; i++)
+            else
             {
-                if (i % 2 == 0)
+                //Get the width and height of our screen (in pixels)
+                int width = Resources.DisplayMetrics.WidthPixels;
+                int height = Resources.DisplayMetrics.HeightPixels;
+
+                Console.WriteLine("WIDTH: " + width);
+                Console.WriteLine("HEIGHT: " + height);
+
+                //Find the max and min values in the x direction on the board
+                int max = 0;
+                int min = 0;
+                bool first = true;
+
+                foreach (KeyValuePair<HexPosition, Hex> tile in testBoard.tiles)
                 {
-                    boardWidth += 1;
-                }
-
-                if (i % 2 == 1)
-                {
-                    boardWidth += 0.5;
-                }
-            }
-            boardWidth += 0.75;
-            for (int i = -1; i > min; i--)
-            {
-                if (((-1) * i) % 2 == 0)
-                {
-                    boardWidth += 1;
-                }
-
-                if (((-1) * i) % 2 == 1)
-                {
-                    boardWidth += 0.5;
-                }
-            }
-            boardWidth += 0.75;
-
-            Console.WriteLine("BOARDWIDTH: " + boardWidth);
-
-            //The size (height and width) in pixels of the images to be displayed on screen (we celiing it so it doesn't go 1 pixel off screen)
-            int dimensions = (int)Math.Ceiling(width / boardWidth);
-
-            //The "size" of the hexagons (used in positioning the hexes in the grid)
-            var size = dimensions / 2;
-
-            //Loop through all the tiles in the board
-            foreach (KeyValuePair<HexPosition, Hex> currentTile in testBoard.tiles)
-            {
-                //Create a new image and add it to the layout
-                ImageView currentHexImage = new ImageView(this);
-                r.AddView(currentHexImage);
-
-                //Set proper image file based on resource type
-                var currentResource = currentTile.Value.type;
-                switch (currentResource)
-                {
-                    case global::Resource.brick:
-                        currentHexImage.SetImageResource(Resource.Drawable.BrickPiece);
-                        break;
-                    case global::Resource.ore:
-                        currentHexImage.SetImageResource(Resource.Drawable.OrePiece);
-                        break;
-                    case global::Resource.sheep:
-                        currentHexImage.SetImageResource(Resource.Drawable.WoolPiece);
-                        break;
-                    case global::Resource.wheat:
-                        currentHexImage.SetImageResource(Resource.Drawable.GrainPiece);
-                        break;
-                    case global::Resource.wood:
-                        currentHexImage.SetImageResource(Resource.Drawable.LumberPiece);
-                        break;
-                    case global::Resource.gold:
-                        currentHexImage.SetImageResource(Resource.Drawable.test);
-                        break;
-                    case global::Resource.desert:
-                        currentHexImage.SetImageResource(Resource.Drawable.DesertPiece);
-                        break;
-                    case global::Resource.harbor_brick:
-                        currentHexImage.SetImageResource(Resource.Drawable.HarborPiece_Brick);
-                        break;
-                    case global::Resource.harbor_ore:
-                        currentHexImage.SetImageResource(Resource.Drawable.HarborPiece_Ore);
-                        break;
-                    case global::Resource.harbor_sheep:
-                        currentHexImage.SetImageResource(Resource.Drawable.HarborPiece_Wool);
-                        break;
-                    case global::Resource.harbor_wheat:
-                        currentHexImage.SetImageResource(Resource.Drawable.HarborPiece_Grain);
-                        break;
-                    case global::Resource.harbor_wood:
-                        currentHexImage.SetImageResource(Resource.Drawable.HarborPiece_Lumber);
-                        break;
-                    case global::Resource.harbor_any:
-                        currentHexImage.SetImageResource(Resource.Drawable.HarborPiece_QuestionMark);
-                        break;
-                    case global::Resource.sea:
-                        currentHexImage.SetImageResource(Resource.Drawable.HarborPiece);
-                        break;
-                    default:
-                        currentHexImage.SetImageResource(Resource.Drawable.test);
-                        break;
-                }
-
-                //Rotate harbor pieces
-                currentHexImage.Rotation = currentTile.Key.direction * 60;
-
-                //Do hex to pixel conversion
-                //var xPos = size * (Math.Sqrt(3) * currentTile.Key.x_pos + (Math.Sqrt(3) / 2) * currentTile.Key.z_pos);
-                //var yPos = size * ((3.0 / 2) * currentTile.Key.z_pos);
-                var xPos = size * ((3.0 / 2) * currentTile.Key.x_pos);
-                var yPos = size * ((Math.Sqrt(3) / 2) * currentTile.Key.x_pos + (Math.Sqrt(3)) * currentTile.Key.z_pos);
-
-                //Move the hexagon into place
-                currentHexImage.TranslationX = (int)xPos;
-                currentHexImage.TranslationY = (int)yPos;
-
-                //Adjust max size of the tiles
-                currentHexImage.SetMaxHeight(dimensions);
-                currentHexImage.SetMaxWidth(dimensions);
-                currentHexImage.SetAdjustViewBounds(true);
-
-                //If the tile produces anything
-                if (currentTile.Value.number != 0)
-                {
-
-                    //Create a new textView and add it to the layout
-                    TextView currentChit = new TextView(this);
-                    r.AddView(currentChit);
-
-                    //Set the number of the chit
-                    currentChit.SetText(currentTile.Value.number.ToString().ToCharArray(), 0, currentTile.Value.number.ToString().Length);
-
-                    //Set the location of the chit
-                    currentChit.TranslationX = (int)xPos + (dimensions / 3);
-                    if (currentTile.Value.number.ToString().Length == 1)
+                    if (first || tile.Key.x_pos > max)
                     {
-                        currentChit.TranslationX += (dimensions / 10);
+                        first = false;
+                        max = tile.Key.x_pos;
                     }
-                    currentChit.TranslationY = (int)yPos + (dimensions / 5);
-
-                    //Scale the chit
-                    currentChit.SetTextSize(Android.Util.ComplexUnitType.Px, dimensions / (float)2.7);
-
-                    //Set color
-                    if (currentTile.Value.number == 8 || currentTile.Value.number == 6)
+                    if (first || tile.Key.x_pos < min)
                     {
-                        currentChit.SetTextColor(Android.Graphics.Color.Red);
+                        first = false;
+                        min = tile.Key.x_pos;
                     }
-                    else
+                }
+
+                //Calculate the board width (its complicated because of flat tops)
+                double boardWidth = 1;
+                for (int i = 1; i < max; i++)
+                {
+                    if (i % 2 == 0)
                     {
-                        currentChit.SetTextColor(Android.Graphics.Color.LightGray);
+                        boardWidth += 1;
+                    }
+
+                    if (i % 2 == 1)
+                    {
+                        boardWidth += 0.5;
+                    }
+                }
+                boardWidth += 0.75;
+                for (int i = -1; i > min; i--)
+                {
+                    if (((-1) * i) % 2 == 0)
+                    {
+                        boardWidth += 1;
+                    }
+
+                    if (((-1) * i) % 2 == 1)
+                    {
+                        boardWidth += 0.5;
+                    }
+                }
+                boardWidth += 0.75;
+
+                Console.WriteLine("BOARDWIDTH: " + boardWidth);
+
+                //The size (height and width) in pixels of the images to be displayed on screen (we celiing it so it doesn't go 1 pixel off screen)
+                int dimensions = (int)Math.Ceiling(width / boardWidth);
+
+                //The "size" of the hexagons (used in positioning the hexes in the grid)
+                var size = dimensions / 2;
+
+                //Loop through all the tiles in the board
+                foreach (KeyValuePair<HexPosition, Hex> currentTile in testBoard.tiles)
+                {
+                    //Create a new image and add it to the layout
+                    ImageView currentHexImage = new ImageView(this);
+                    r.AddView(currentHexImage);
+
+                    //Set proper image file based on resource type
+                    var currentResource = currentTile.Value.type;
+                    switch (currentResource)
+                    {
+                        case global::Resource.brick:
+                            currentHexImage.SetImageResource(Resource.Drawable.BrickPiece);
+                            break;
+                        case global::Resource.ore:
+                            currentHexImage.SetImageResource(Resource.Drawable.OrePiece);
+                            break;
+                        case global::Resource.sheep:
+                            currentHexImage.SetImageResource(Resource.Drawable.WoolPiece);
+                            break;
+                        case global::Resource.wheat:
+                            currentHexImage.SetImageResource(Resource.Drawable.GrainPiece);
+                            break;
+                        case global::Resource.wood:
+                            currentHexImage.SetImageResource(Resource.Drawable.LumberPiece);
+                            break;
+                        case global::Resource.gold:
+                            currentHexImage.SetImageResource(Resource.Drawable.test);
+                            break;
+                        case global::Resource.desert:
+                            currentHexImage.SetImageResource(Resource.Drawable.DesertPiece);
+                            break;
+                        case global::Resource.harbor_brick:
+                            currentHexImage.SetImageResource(Resource.Drawable.HarborPiece_Brick);
+                            break;
+                        case global::Resource.harbor_ore:
+                            currentHexImage.SetImageResource(Resource.Drawable.HarborPiece_Ore);
+                            break;
+                        case global::Resource.harbor_sheep:
+                            currentHexImage.SetImageResource(Resource.Drawable.HarborPiece_Wool);
+                            break;
+                        case global::Resource.harbor_wheat:
+                            currentHexImage.SetImageResource(Resource.Drawable.HarborPiece_Grain);
+                            break;
+                        case global::Resource.harbor_wood:
+                            currentHexImage.SetImageResource(Resource.Drawable.HarborPiece_Lumber);
+                            break;
+                        case global::Resource.harbor_any:
+                            currentHexImage.SetImageResource(Resource.Drawable.HarborPiece_QuestionMark);
+                            break;
+                        case global::Resource.sea:
+                            currentHexImage.SetImageResource(Resource.Drawable.HarborPiece);
+                            break;
+                        default:
+                            currentHexImage.SetImageResource(Resource.Drawable.test);
+                            break;
+                    }
+
+                    //Rotate harbor pieces
+                    currentHexImage.Rotation = currentTile.Key.direction * 60;
+
+                    //Do hex to pixel conversion
+                    //var xPos = size * (Math.Sqrt(3) * currentTile.Key.x_pos + (Math.Sqrt(3) / 2) * currentTile.Key.z_pos);
+                    //var yPos = size * ((3.0 / 2) * currentTile.Key.z_pos);
+                    var xPos = size * ((3.0 / 2) * currentTile.Key.x_pos);
+                    var yPos = size * ((Math.Sqrt(3) / 2) * currentTile.Key.x_pos + (Math.Sqrt(3)) * currentTile.Key.z_pos);
+
+                    //Move the hexagon into place
+                    currentHexImage.TranslationX = (int)xPos;
+                    currentHexImage.TranslationY = (int)yPos;
+
+                    //Adjust max size of the tiles
+                    currentHexImage.SetMaxHeight(dimensions);
+                    currentHexImage.SetMaxWidth(dimensions);
+                    currentHexImage.SetAdjustViewBounds(true);
+
+                    //If the tile produces anything
+                    if (currentTile.Value.number != 0)
+                    {
+
+                        //Create a new textView and add it to the layout
+                        TextView currentChit = new TextView(this);
+                        r.AddView(currentChit);
+
+                        //Set the number of the chit
+                        currentChit.SetText(currentTile.Value.number.ToString().ToCharArray(), 0, currentTile.Value.number.ToString().Length);
+
+                        //Set the location of the chit
+                        currentChit.TranslationX = (int)xPos + (dimensions / 3);
+                        if (currentTile.Value.number.ToString().Length == 1)
+                        {
+                            currentChit.TranslationX += (dimensions / 10);
+                        }
+                        currentChit.TranslationY = (int)yPos + (dimensions / 5);
+
+                        //Scale the chit
+                        currentChit.SetTextSize(Android.Util.ComplexUnitType.Px, dimensions / (float)2.7);
+
+                        //Set color
+                        if (currentTile.Value.number == 8 || currentTile.Value.number == 6)
+                        {
+                            currentChit.SetTextColor(Android.Graphics.Color.Red);
+                        }
+                        else
+                        {
+                            currentChit.SetTextColor(Android.Graphics.Color.LightGray);
+                        }
                     }
                 }
             }
@@ -356,10 +376,17 @@ namespace CBG_Xamarin
                 //For now, create an abritrary board for testing
                 board = new Board("base_3-4");
             }
-            while (!analyzer.acceptable_variance(board, variance) ||
-                  !analyzer.acceptable_distribution_tile(board, 5));
-            
+            while (!stop &&
+                  (!analyzer.acceptable_variance(board, variance) ||
+                  !analyzer.acceptable_distribution_tile(board, 5)));
+
             return board;
+        }
+
+        public override void OnBackPressed()
+        {
+            //TODO: ACTUALLY GO BACK TO PREVIOUS SCREEN
+            stop = true;
         }
     }
 }

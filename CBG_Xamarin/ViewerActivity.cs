@@ -8,13 +8,14 @@ using System.Collections.Generic;
 using Android.Views;
 using Android.Content.Res;
 using Android.Content;
+using System.Threading.Tasks;
 
 namespace CBG_Xamarin
 {
     [Activity(Label = "ViewerActivity")]
     public class ViewerActivity : Activity
     {
-        protected override void OnCreate(Bundle savedInstanceState)
+        async protected override void OnCreate(Bundle savedInstanceState)
         {
             base.OnCreate(savedInstanceState);
             Xamarin.Essentials.Platform.Init(this, savedInstanceState);
@@ -102,16 +103,66 @@ namespace CBG_Xamarin
                 No.Clickable = false;
             };
 
-            //TODO: move this to generator with board gen
-            Board testBoard;
-            do
+            VideoView LoadingIcon = FindViewById<VideoView>(Resource.Id.LoadingIcon);
+            Android.Net.Uri uri = Android.Net.Uri.Parse("android.resource://"+PackageName+"/"+Resource.Raw.LoadingIcon2);
+            LoadingIcon.SetVideoURI(uri);
+            LoadingIcon.Start();
+            string[] possibleTips =
             {
-                //TODO: probably load the board in the generator, and send the actual board to here once generated
-                //For now, create an abritrary board for testing
-                testBoard = new Board("base_3-4");
-            }
-            while(!analyzer.acceptable_variance(testBoard, variance) || 
-                  !analyzer.acceptable_distribution_tile(testBoard, 5));
+                "Raising Mountains",
+                "Carving Canyons",
+                "Shifting Tectonic Plates",
+                "Adding Volcanos",
+                "Removing Volcanos",
+                "Filling Ocean",
+                "Too Much Water, Draining Ocean",
+                "Building Harbors",
+                "Prospecting for Ore",
+                "Plowing Fields",
+                "Planting Wheat",
+                "Watering Wheat",
+                "Waiting for Wheat to Grow",
+                "Still Waiting for Wheat to Grow",
+                "Wheat Died; Planting more",
+                "Breeding Sheep",
+                "Shearing Sheep",
+                "Feeding Wheat to Sheep",
+                "Digging up Clay",
+                "Turning Clay into Bricks",
+                "Commiting Deforestation",
+                "Planting New Trees"
+            };
+
+            Random randomNumberGenerator = new Random();
+            TextView tips = FindViewById<TextView>(Resource.Id.Tips);
+            LoadingIcon.Completion += async (sender, e) =>
+            {
+                LoadingIcon.Start();
+                tips.Visibility = ViewStates.Gone;
+                await Task.Delay(500);
+                tips.Text = "..." + possibleTips[randomNumberGenerator.Next(0, possibleTips.Length)] + "...";
+                await Task.Delay(500);
+                tips.Visibility = ViewStates.Visible;
+                await Task.Delay(1500);
+                tips.Visibility = ViewStates.Gone;
+                await Task.Delay(500);
+                tips.Text = "..." + possibleTips[randomNumberGenerator.Next(0, possibleTips.Length)] + "...";
+                await Task.Delay(500);
+                tips.Visibility = ViewStates.Visible;
+            };
+            tips.Text = "...Generating Map...";
+
+            RelativeLayout menu = FindViewById<RelativeLayout>(Resource.Id.menuButtons);
+            menu.SetBackgroundColor(Android.Graphics.Color.Black);
+
+            //Wait for the board to be generated
+            Board testBoard = await Task.Run(() => generateBoard(variance));
+
+            //Once the board is generated, get rid of the loading icon
+            tips.Visibility = ViewStates.Gone;
+            LoadingIcon.Visibility = ViewStates.Gone;
+            LoadingIcon.StopPlayback();
+            menu.SetBackgroundColor(Android.Graphics.Color.White);
 
             //Get a variable for the main relative layout
             RelativeLayout r = FindViewById<RelativeLayout>(Resource.Id.board);
@@ -130,7 +181,7 @@ namespace CBG_Xamarin
 
             foreach (KeyValuePair<HexPosition, Hex> tile in testBoard.tiles)
             {
-                if(first || tile.Key.x_pos > max)
+                if (first || tile.Key.x_pos > max)
                 {
                     first = false;
                     max = tile.Key.x_pos;
@@ -144,14 +195,14 @@ namespace CBG_Xamarin
 
             //Calculate the board width (its complicated because of flat tops)
             double boardWidth = 1;
-            for(int i = 1; i < max; i++)
+            for (int i = 1; i < max; i++)
             {
-                if(i%2 == 0)
+                if (i % 2 == 0)
                 {
                     boardWidth += 1;
                 }
 
-                if(i%2 == 1)
+                if (i % 2 == 1)
                 {
                     boardWidth += 0.5;
                 }
@@ -174,11 +225,11 @@ namespace CBG_Xamarin
             Console.WriteLine("BOARDWIDTH: " + boardWidth);
 
             //The size (height and width) in pixels of the images to be displayed on screen (we celiing it so it doesn't go 1 pixel off screen)
-            int dimensions = (int)Math.Ceiling(width/boardWidth);
+            int dimensions = (int)Math.Ceiling(width / boardWidth);
 
             //The "size" of the hexagons (used in positioning the hexes in the grid)
             var size = dimensions / 2;
-            
+
             //Loop through all the tiles in the board
             foreach (KeyValuePair<HexPosition, Hex> currentTile in testBoard.tiles)
             {
@@ -267,12 +318,12 @@ namespace CBG_Xamarin
                     currentChit.SetText(currentTile.Value.number.ToString().ToCharArray(), 0, currentTile.Value.number.ToString().Length);
 
                     //Set the location of the chit
-                    currentChit.TranslationX = (int)xPos + (dimensions/3);
+                    currentChit.TranslationX = (int)xPos + (dimensions / 3);
                     if (currentTile.Value.number.ToString().Length == 1)
                     {
-                        currentChit.TranslationX += (dimensions/10);
+                        currentChit.TranslationX += (dimensions / 10);
                     }
-                    currentChit.TranslationY = (int)yPos + (dimensions/5);
+                    currentChit.TranslationY = (int)yPos + (dimensions / 5);
 
                     //Scale the chit
                     currentChit.SetTextSize(Android.Util.ComplexUnitType.Px, dimensions / (float)2.7);
@@ -294,6 +345,21 @@ namespace CBG_Xamarin
             Xamarin.Essentials.Platform.OnRequestPermissionsResult(requestCode, permissions, grantResults);
 
             base.OnRequestPermissionsResult(requestCode, permissions, grantResults);
+        }
+
+        public Board generateBoard(int variance)
+        {
+            Board board;
+            do
+            {
+                //TODO: probably load the board in the generator, and send the actual board to here once generated
+                //For now, create an abritrary board for testing
+                board = new Board("base_3-4");
+            }
+            while (!analyzer.acceptable_variance(board, variance) ||
+                  !analyzer.acceptable_distribution_tile(board, 5));
+            
+            return board;
         }
     }
 }

@@ -17,6 +17,15 @@ namespace CBG_Xamarin
     {
         //This tells the board generation thread to stop if the user uses the back button
         private bool stop = false;
+
+        //The data that we will get in from the generator acrivity
+        private int variance = 5;
+        private int brick = 50;
+        private int ore = 50;
+        private int sheep = 50;
+        private int wheat = 50;
+        private int wood = 50;
+
         async protected override void OnCreate(Bundle savedInstanceState)
         {
             base.OnCreate(savedInstanceState);
@@ -31,12 +40,6 @@ namespace CBG_Xamarin
             foo.save_xml();
 
             //Get data given from GeneratorActivity
-            int variance = 5;
-            int brick = 50;
-            int ore = 50;
-            int sheep = 50;
-            int wheat = 50;
-            int wood = 50;
             if(!(Intent.Extras is null))
             {
                 variance = Intent.Extras.GetInt("Variance");
@@ -72,22 +75,8 @@ namespace CBG_Xamarin
             //Add functionlity to it
             Yes.Click += (sender, e) =>
             {
-                //Stop the board generation
-                stop = true;
-
-                //Create an intent to launch the Generator Activity
-                Intent generatorIntent = new Intent(this, typeof(GeneratorActivity));
-
-                //Add the necessary data to the intent
-                generatorIntent.PutExtra("Variance", variance);
-                generatorIntent.PutExtra("Brick", brick + 1);
-                generatorIntent.PutExtra("Ore", ore + 1);
-                generatorIntent.PutExtra("Sheep", sheep + 1);
-                generatorIntent.PutExtra("Wheat", wheat + 1);
-                generatorIntent.PutExtra("Wood", wood + 1);
-
-                //Start the activity
-                StartActivity(generatorIntent);
+                //Go back to the previous activity
+                loadPreviousActivity();
             };
 
             //Get the No button
@@ -367,6 +356,9 @@ namespace CBG_Xamarin
             base.OnRequestPermissionsResult(requestCode, permissions, grantResults);
         }
 
+        //This function generates the board. It happens asynchronously
+        //Input all necessary stuff to make board generation happen.
+        //Outputs the board
         public Board generateBoard(int variance)
         {
             Board board;
@@ -383,10 +375,33 @@ namespace CBG_Xamarin
             return board;
         }
 
+        //This function overrides the behavoir for when the native Android back button is pressed
         public override void OnBackPressed()
         {
-            //TODO: ACTUALLY GO BACK TO PREVIOUS SCREEN
+            //Go back to the generator activity
+            loadPreviousActivity();
+        }
+
+        //This function goes back to the previous activity
+        //It should be called when either the Android back button or the in app back button is pressed
+        public void loadPreviousActivity()
+        {
+            //Stop the board generation
             stop = true;
+
+            //Create an intent to launch the Generator Activity
+            Intent generatorIntent = new Intent(this, typeof(GeneratorActivity));
+
+            //Add the necessary data to the intent
+            generatorIntent.PutExtra("Variance", variance);
+            generatorIntent.PutExtra("Brick", brick + 1);
+            generatorIntent.PutExtra("Ore", ore + 1);
+            generatorIntent.PutExtra("Sheep", sheep + 1);
+            generatorIntent.PutExtra("Wheat", wheat + 1);
+            generatorIntent.PutExtra("Wood", wood + 1);
+
+            //Start the activity
+            StartActivity(generatorIntent);
         }
     }
 }

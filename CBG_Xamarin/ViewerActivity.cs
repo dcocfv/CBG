@@ -160,8 +160,13 @@ namespace CBG_Xamarin
             //Wait for the board to be generated
             Board testBoard = await Task.Run(() => generateBoard(variance));
 
+            //Intentional delay to make the transition from the Generator Activity to the loading screen smoother
+            await Task.Delay(800);
+
             //Once the board is generated, get rid of the loading icon
             tips.Visibility = ViewStates.Gone;
+            //Intential delay to make the transition from the loading screen to the board display smoother
+            await Task.Delay(200);
             LoadingIcon.Visibility = ViewStates.Gone;
             LoadingIcon.StopPlayback();
             menu.SetBackgroundColor(Android.Graphics.Color.White);

@@ -49,7 +49,7 @@ public static class analyzer
         }
 
         //Console.WriteLine("Variance limit: " + variance_limit);
-        System.Diagnostics.Debug.WriteLine("Actual variance: " + variance(intersection_production_values));
+        //System.Diagnostics.Debug.WriteLine("Actual variance: " + variance(intersection_production_values));
 
         //Find the variance of the production values and compare them to the acceptable bounds
         return variance(intersection_production_values) < variance_limit;
@@ -58,9 +58,24 @@ public static class analyzer
     // Checks the total resource production of the given board, comparing the total resource production of
     // each of the main 5 individual resources to make sure they are within the variance_limit. In reality, not
     // recommended as a setting for typical games, because unbalanced resources are a fun part of the game
-    public static bool acceptable_distribution_tile(Board game_board, double variance_limit)
+    public static bool acceptable_distribution_tile(Board game_board, float brick, float ore, float sheep, float wheat, float wood)
     {
         ushort[] resource_production_values = new ushort[5];
+        float[] resource_production_ratio = new float[5];
+
+        float total_desired_production = Convert.ToSingle(brick + ore + sheep + wheat + wood);
+        float[] desired_production_ratio = {
+             brick/total_desired_production,
+             ore/total_desired_production,
+             sheep/total_desired_production,
+             wheat/total_desired_production,
+             wood/total_desired_production
+        };
+
+        System.Diagnostics.Debug.WriteLine("desired ratios: " + desired_production_ratio[0] + ", " +
+            desired_production_ratio[1] + ", " + desired_production_ratio[2] + ", " +
+            desired_production_ratio[3] + ", " + desired_production_ratio[4]);
+
         foreach(KeyValuePair<HexPosition, Hex> tile in game_board.tiles)
         {
             switch(tile.Value.type)
@@ -83,9 +98,49 @@ public static class analyzer
             }
         }
 
-        System.Diagnostics.Debug.WriteLine("Tile Variance limit: " + variance_limit);
-        System.Diagnostics.Debug.WriteLine("Tile Actual variance: " + variance(new List<ushort>(resource_production_values)));
+        ushort total_resource_production = 0;
+        for (int i = 0; i < 5; i++)
+            total_resource_production += resource_production_values[i];
 
-        return variance(new List<ushort>(resource_production_values)) < variance_limit;
+        for (int i = 0; i < 5; i++)
+        {
+            resource_production_ratio[i] = resource_production_values[i] / Convert.ToSingle(total_resource_production);
+
+            if (Math.Abs(resource_production_ratio[i] - desired_production_ratio[i]) > 0.1)
+            {
+                return false;
+            }
+        }
+
+        System.Diagnostics.Debug.WriteLine("actual ratios: " + resource_production_ratio[0] + ", " +
+            resource_production_ratio[1] + ", " + resource_production_ratio[2] + ", " +
+            resource_production_ratio[3] + ", " + resource_production_ratio[4]);
+
+        return true;
+    }
+
+    // Checks that no 6 or 8 is adjacent to each other on the game board. If it is, return false. Else return true
+    public static bool no_6_8_adjacent(Board game_board)
+    {
+        foreach(KeyValuePair<HexPosition, Hex> tile in game_board.tiles)
+        {
+            if(tile.Value.number == 6 || tile.Value.number == 8)
+            {
+                List<HexPosition> neighbors = tile.Key.GetNeighbors();
+                for(int i = 0; i < 6; i++)
+                {
+                    if(game_board.tiles.ContainsKey(neighbors[i]))
+                    {
+                        Hex hex;
+                        game_board.tiles.TryGetValue(neighbors[i], out hex);
+                        if (hex.number == 6 || hex.number == 8)
+                        {
+                            return false;
+                        }
+                    }
+                }
+            }
+        }
+        return true;
     }
 }

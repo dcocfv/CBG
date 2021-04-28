@@ -28,20 +28,26 @@ namespace CBG_Xamarin
             foo.save_xml();
 
             //Get data given from GeneratorActivity
-            int variance = 5;
-            int brick = 50;
-            int ore = 50;
-            int sheep = 50;
-            int wheat = 50;
-            int wood = 50;
+            float variance = 5;
+            float brick = 50;
+            float ore = 50;
+            float sheep = 50;
+            float wheat = 50;
+            float wood = 50;
             if(!(Intent.Extras is null))
             {
-                variance = Intent.Extras.GetInt("Variance");
-                brick = Intent.Extras.GetInt("Brick");
-                ore = Intent.Extras.GetInt("Ore");
-                sheep = Intent.Extras.GetInt("Sheep");
-                wheat = Intent.Extras.GetInt("Wheat");
-                wood = Intent.Extras.GetInt("Wood");
+                variance = (float)Intent.Extras.GetInt("Variance");
+                brick = (float)Intent.Extras.GetInt("Brick");
+                ore = (float)Intent.Extras.GetInt("Ore");
+                sheep = (float)Intent.Extras.GetInt("Sheep");
+                wheat = (float)Intent.Extras.GetInt("Wheat");
+                wood = (float)Intent.Extras.GetInt("Wood");
+
+                System.Diagnostics.Debug.WriteLine("brick: " + brick);
+                System.Diagnostics.Debug.WriteLine("ore: " + ore);
+                System.Diagnostics.Debug.WriteLine("sheep: " + sheep);
+                System.Diagnostics.Debug.WriteLine("wheat: " + wheat);
+                System.Diagnostics.Debug.WriteLine("wood: " + wood);
             }
 
             //Get the back button
@@ -102,16 +108,43 @@ namespace CBG_Xamarin
                 No.Clickable = false;
             };
 
+            // Initialize stopwatch to measure elapsed time in board generation
+            System.Diagnostics.Stopwatch stopwatch = new System.Diagnostics.Stopwatch();
+            stopwatch.Start();
+
             //TODO: move this to generator with board gen
             Board testBoard;
             do
             {
                 //TODO: probably load the board in the generator, and send the actual board to here once generated
                 //For now, create an abritrary board for testing
+
+                if (brick == 0 || ore == 0 || sheep == 0 || wheat == 0 || wood == 0)
+                    brick = ore = sheep = wheat = wood = 1;
+
+                // if time elapses, loosen requirements slightly and continue 
+                if(stopwatch.ElapsedMilliseconds > 5000)
+                {
+                    System.Diagnostics.Debug.WriteLine("5s hit! Loosing requirements...");
+                    System.Diagnostics.Debug.WriteLine("old: " + brick + " " + ore + " " + sheep + " " + wheat + " " + wood);
+
+                    variance += 1;
+
+                    float avg = (brick + ore + sheep + wheat + wood) / 5;
+                    brick += (float)(brick > avg ? (-1 * (brick - avg) * 0.25) : ((avg - brick) * 0.25));
+                    ore += (float)(ore > avg ? (-1 * (ore - avg) * 0.25) : ((avg - ore) * 0.25));
+                    sheep += (float)(sheep > avg ? (-1 * (sheep - avg) * 0.25) : ((avg - sheep) * 0.25));
+                    wheat += (float)(wheat > avg ? (-1 * (wheat - avg) * 0.25) : ((avg - wheat) * 0.25));
+                    wood += (float)(wood > avg ? (-1 * (wood - avg) * 0.25) : ((avg - wood) * 0.25));
+                    System.Diagnostics.Debug.WriteLine("new: " + brick + " " + ore + " " + sheep + " " + wheat + " " + wood);
+                    stopwatch.Restart();
+                }
+
                 testBoard = new Board("base_3-4");
             }
             while(!analyzer.acceptable_variance(testBoard, variance) || 
-                  !analyzer.acceptable_distribution_tile(testBoard, 5));
+                  !analyzer.acceptable_distribution_tile(testBoard, brick, ore, sheep, wheat, wood) ||
+                  !analyzer.no_6_8_adjacent(testBoard));
 
             //Get a variable for the main relative layout
             RelativeLayout r = FindViewById<RelativeLayout>(Resource.Id.board);

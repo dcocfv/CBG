@@ -19,11 +19,26 @@ public class HexPosition
         z_pos = z;
     }
 
+    public HexPosition(short x, short y)
+    {
+        x_pos = x;
+        y_pos = y;
+        z_pos = (short)(0 - x - y);
+    }
+
     public HexPosition(short x, short y, short z, ushort dir)
     {
         x_pos = x;
         y_pos = y;
         z_pos = z;
+        direction = dir;
+    }
+
+    public HexPosition(short x, short y, ushort dir)
+    {
+        x_pos = x;
+        y_pos = y;
+        z_pos = (short)(0 - x - y);
         direction = dir;
     }
 

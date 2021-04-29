@@ -28,6 +28,7 @@ namespace CBG_Xamarin
             int sheep = 50;
             int wheat = 50;
             int wood = 50;
+            string boardConfig = "base_3";
             if(!(Intent.Extras is null))
             {
                 variance = Intent.Extras.GetInt("Variance");
@@ -36,6 +37,7 @@ namespace CBG_Xamarin
                 sheep = Intent.Extras.GetInt("Sheep");
                 wheat = Intent.Extras.GetInt("Wheat");
                 wood = Intent.Extras.GetInt("Wood");
+                boardConfig = Intent.Extras.GetString("BoardConfig");
             }
 
             //Get the back button
@@ -73,6 +75,7 @@ namespace CBG_Xamarin
                 generatorIntent.PutExtra("Sheep", sheep + 1);
                 generatorIntent.PutExtra("Wheat", wheat + 1);
                 generatorIntent.PutExtra("Wood", wood + 1);
+                generatorIntent.PutExtra("BoardConfig", boardConfig);
 
                 //Start the activity
                 StartActivity(generatorIntent);
@@ -102,7 +105,7 @@ namespace CBG_Xamarin
             {
                 //TODO: probably load the board in the generator, and send the actual board to here once generated
                 //For now, create an abritrary board for testing
-                testBoard = new Board("seafarers_4_2");
+                testBoard = new Board(boardConfig);
             }
             while(!analyzer.acceptable_variance(testBoard, variance) || 
                   !analyzer.acceptable_distribution_tile(testBoard, 5));

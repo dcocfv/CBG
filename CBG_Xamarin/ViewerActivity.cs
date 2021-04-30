@@ -404,7 +404,7 @@ namespace CBG_Xamarin
             while (!stop &&
                   (!analyzer.acceptable_variance(board, variance) ||
                   !analyzer.acceptable_distribution_tile(board, brick, ore, sheep, wheat, wood) ||
-                  !analyzer.no_6_8_adjacent(board));
+                  !analyzer.no_6_8_adjacent(board)));
 
             return board;
         }

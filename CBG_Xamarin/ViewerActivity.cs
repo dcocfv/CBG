@@ -372,7 +372,13 @@ namespace CBG_Xamarin
             // Initialize stopwatch to measure elapsed time in board generation
             System.Diagnostics.Stopwatch stopwatch = new System.Diagnostics.Stopwatch();
             stopwatch.Start();
-            
+
+            float init_brick = brick;
+            float init_ore = ore;
+            float init_sheep = sheep;
+            float init_wheat = wheat;
+            float init_wood = wood;
+
             Board board;
             do
             {
@@ -380,19 +386,19 @@ namespace CBG_Xamarin
                     brick = ore = sheep = wheat = wood = 1;
                     
                 // if time elapses, loosen requirements slightly and continue 
-                if(stopwatch.ElapsedMilliseconds > 5000)
+                if(stopwatch.ElapsedMilliseconds > 1000)
                 {
-                    System.Diagnostics.Debug.WriteLine("5s hit! Loosing requirements...");
+                    System.Diagnostics.Debug.WriteLine("1s hit! Loosing requirements...");
                     System.Diagnostics.Debug.WriteLine("old: " + brick + " " + ore + " " + sheep + " " + wheat + " " + wood);
 
-                    variance += 1;
+                    variance += 0.05F;
 
                     float avg = (brick + ore + sheep + wheat + wood) / 5;
-                    brick += (float)(brick > avg ? (-1 * (brick - avg) * 0.25) : ((avg - brick) * 0.25));
-                    ore += (float)(ore > avg ? (-1 * (ore - avg) * 0.25) : ((avg - ore) * 0.25));
-                    sheep += (float)(sheep > avg ? (-1 * (sheep - avg) * 0.25) : ((avg - sheep) * 0.25));
-                    wheat += (float)(wheat > avg ? (-1 * (wheat - avg) * 0.25) : ((avg - wheat) * 0.25));
-                    wood += (float)(wood > avg ? (-1 * (wood - avg) * 0.25) : ((avg - wood) * 0.25));
+                    brick += (float)(brick > avg ? (-1 * (brick - avg) * 0.05) : ((avg - brick) * 0.05));
+                    ore += (float)(ore > avg ? (-1 * (ore - avg) * 0.05) : ((avg - ore) * 0.05));
+                    sheep += (float)(sheep > avg ? (-1 * (sheep - avg) * 0.05) : ((avg - sheep) * 0.05));
+                    wheat += (float)(wheat > avg ? (-1 * (wheat - avg) * 0.05) : ((avg - wheat) * 0.05));
+                    wood += (float)(wood > avg ? (-1 * (wood - avg) * 0.05) : ((avg - wood) * 0.05));
                     System.Diagnostics.Debug.WriteLine("new: " + brick + " " + ore + " " + sheep + " " + wheat + " " + wood);
                     stopwatch.Restart();
                 }
@@ -405,6 +411,17 @@ namespace CBG_Xamarin
                   (!analyzer.acceptable_variance(board, variance) ||
                   !analyzer.acceptable_distribution_tile(board, brick, ore, sheep, wheat, wood) ||
                   !analyzer.no_6_8_adjacent(board)));
+
+            float total_init_req = init_brick + init_ore + init_sheep + init_wheat + init_wood;
+            float total_end_req = brick + ore + sheep + wheat + wood;
+            float error = Math.Abs(init_brick / total_init_req - brick / total_end_req) + Math.Abs(init_ore / total_init_req - ore / total_end_req) +
+                Math.Abs(init_sheep / total_init_req - sheep / total_end_req) + Math.Abs(init_wheat / total_init_req - wheat / total_end_req) +
+                Math.Abs(init_wood / total_init_req - wood / total_end_req);
+            System.Diagnostics.Debug.WriteLine("init req: " + init_brick / total_init_req + " " + init_ore / total_init_req + " " +
+                init_sheep / total_init_req + " " + init_wheat / total_init_req + " " + init_wood / total_init_req);
+            System.Diagnostics.Debug.WriteLine("end req: " + brick / total_end_req + " " + ore / total_end_req + " " +
+                sheep / total_end_req + " " + wheat / total_end_req + " " + wood / total_end_req);
+            System.Diagnostics.Debug.WriteLine("total error (% off desired model): " + error);
 
             return board;
         }

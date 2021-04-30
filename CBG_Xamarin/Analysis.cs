@@ -102,15 +102,15 @@ public static class analyzer
         for (int i = 0; i < 5; i++)
             total_resource_production += resource_production_values[i];
 
+        float error = 0;
         for (int i = 0; i < 5; i++)
         {
             resource_production_ratio[i] = resource_production_values[i] / Convert.ToSingle(total_resource_production);
-
-            if (Math.Abs(resource_production_ratio[i] - desired_production_ratio[i]) > 0.1)
-            {
-                return false;
-            }
+            error += Math.Abs(resource_production_ratio[i] - desired_production_ratio[i]);
         }
+
+        if (error > 0.1)
+            return false;
 
         System.Diagnostics.Debug.WriteLine("actual ratios: " + resource_production_ratio[0] + ", " +
             resource_production_ratio[1] + ", " + resource_production_ratio[2] + ", " +

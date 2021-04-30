@@ -14,6 +14,9 @@ namespace CBG_Xamarin
     [Activity(Label = "SaveLoadActivity", MainLauncher = true)]
     public class SaveLoadActivity : Activity
     {
+        //We only want to start loading the config once, so we will use this variable to ensure that happens only once
+        bool loading = false;
+
         protected override void OnCreate(Bundle savedInstanceState)
         {
             base.OnCreate(savedInstanceState);
@@ -64,14 +67,20 @@ namespace CBG_Xamarin
             //When we click this button
             LoadConfig.Click += (sender, e) =>
             {
-                //Create an intent to launch the Generator Activity
-                Intent generatorIntent = new Intent(this, typeof(GeneratorActivity));
+                if (!loading)
+                {
+                    //Make sure we don't load the config and start the generator activity twice
+                    loading = true;
 
-                //Add the necessary data to the intent
-                generatorIntent.PutExtra("BoardConfig", createBoardConfig());
+                    //Create an intent to launch the Generator Activity
+                    Intent generatorIntent = new Intent(this, typeof(GeneratorActivity));
 
-                //Start the activity
-                StartActivity(generatorIntent);
+                    //Add the necessary data to the intent
+                    generatorIntent.PutExtra("BoardConfig", createBoardConfig());
+
+                    //Start the activity
+                    StartActivity(generatorIntent);
+                }
             };
         }
 

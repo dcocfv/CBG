@@ -14,12 +14,18 @@ namespace CBG_Xamarin
     [Activity(Label = "GeneratorActivity")]
     public class GeneratorActivity : Activity
     {
+        //We only want to start generating the board once, so we will use this variable to ensure that happens only once
+        bool generating = false;
+
         protected override void OnCreate(Bundle savedInstanceState)
         {
             base.OnCreate(savedInstanceState);
             Xamarin.Essentials.Platform.Init(this, savedInstanceState);
             // Set our view from the "main" layout resource
             SetContentView(Resource.Layout.activity_generator);
+
+            //the board config string
+            string boardConfig = "base_3";
 
             //Get data input into this activity
             if (!(Intent.Extras is null))
@@ -72,6 +78,13 @@ namespace CBG_Xamarin
                     SeekBar WoodBar = FindViewById<SeekBar>(Resource.Id.WoodBar);
                     WoodBar.Progress = wood;
                 }
+
+                //Get the board config string
+                string s = Intent.Extras.GetString("BoardConfig");
+                if(s != null)
+                {
+                    boardConfig = s;
+                }
             }
 
             //Get the back button
@@ -99,13 +112,8 @@ namespace CBG_Xamarin
             //Add functionlity to it
             Yes.Click += (sender, e) =>
             {
-                //Create an intent to launch the SaveLoad Activity
-                Intent saveLoadIntent = new Intent(this, typeof(SaveLoadActivity));
-
-                //TODO: Add the necessary data to the intent
-
-                //Start the activity
-                StartActivity(saveLoadIntent);
+                //Go back to the generator activity
+                loadPreviousActivity();
             };
 
             //Get the No button
@@ -188,40 +196,65 @@ namespace CBG_Xamarin
             //Add functionality to the generate board button
             GenerateBoard.Click += (sender, e) =>
             {
-                //Get the values of the sliders
-                SeekBar BrickBar = FindViewById<SeekBar>(Resource.Id.BrickBar);
-                Console.WriteLine("Brick: " + BrickBar.Progress);
+                if (!generating)
+                {
+                    //Make sure we don't load the viwer activity and generate the board twice
+                    generating = true;
 
-                SeekBar OreBar = FindViewById<SeekBar>(Resource.Id.OreBar);
-                Console.WriteLine("Ore: " + OreBar.Progress);
+                    //Get the values of the sliders
+                    SeekBar BrickBar = FindViewById<SeekBar>(Resource.Id.BrickBar);
+                    Console.WriteLine("Brick: " + BrickBar.Progress);
 
-                SeekBar SheepBar = FindViewById<SeekBar>(Resource.Id.SheepBar);
-                Console.WriteLine("Sheep: " + SheepBar.Progress);
+                    SeekBar OreBar = FindViewById<SeekBar>(Resource.Id.OreBar);
+                    Console.WriteLine("Ore: " + OreBar.Progress);
 
-                SeekBar WheatBar = FindViewById<SeekBar>(Resource.Id.WheatBar);
-                Console.WriteLine("Wheat: " + WheatBar.Progress);
+                    SeekBar SheepBar = FindViewById<SeekBar>(Resource.Id.SheepBar);
+                    Console.WriteLine("Sheep: " + SheepBar.Progress);
 
-                SeekBar WoodBar = FindViewById<SeekBar>(Resource.Id.WoodBar);
-                Console.WriteLine("Wood: " + WoodBar.Progress);
+                    SeekBar WheatBar = FindViewById<SeekBar>(Resource.Id.WheatBar);
+                    Console.WriteLine("Wheat: " + WheatBar.Progress);
 
-                SeekBar VarianceBar = FindViewById<SeekBar>(Resource.Id.VarianceBar);
-                int varianceBarProgress = VarianceBar.Progress + 3;
-                Console.WriteLine("Variance: " + varianceBarProgress);
+                    SeekBar WoodBar = FindViewById<SeekBar>(Resource.Id.WoodBar);
+                    Console.WriteLine("Wood: " + WoodBar.Progress);
 
-                //Create an intent to launch the Viewer Activity
-                Intent viewerIntent = new Intent(this, typeof(ViewerActivity));
+                    SeekBar VarianceBar = FindViewById<SeekBar>(Resource.Id.VarianceBar);
+                    int varianceBarProgress = VarianceBar.Progress + 3;
+                    Console.WriteLine("Variance: " + varianceBarProgress);
 
-                //Add the necessary data to the intent
-                viewerIntent.PutExtra("Variance", varianceBarProgress);
-                viewerIntent.PutExtra("Brick", BrickBar.Progress);
-                viewerIntent.PutExtra("Ore", OreBar.Progress);
-                viewerIntent.PutExtra("Sheep", SheepBar.Progress);
-                viewerIntent.PutExtra("Wheat", WheatBar.Progress);
-                viewerIntent.PutExtra("Wood", WoodBar.Progress);
+                    //Create an intent to launch the Viewer Activity
+                    Intent viewerIntent = new Intent(this, typeof(ViewerActivity));
 
-                //Start the activity
-                StartActivity(viewerIntent);
+                    //Add the necessary data to the intent
+                    viewerIntent.PutExtra("Variance", varianceBarProgress);
+                    viewerIntent.PutExtra("Brick", BrickBar.Progress);
+                    viewerIntent.PutExtra("Ore", OreBar.Progress);
+                    viewerIntent.PutExtra("Sheep", SheepBar.Progress);
+                    viewerIntent.PutExtra("Wheat", WheatBar.Progress);
+                    viewerIntent.PutExtra("Wood", WoodBar.Progress);
+                    viewerIntent.PutExtra("BoardConfig", boardConfig);
+
+                    //Start the activity
+                    StartActivity(viewerIntent);
+                }
             };
+        }
+
+        //This function overrides the behavoir for when the native Android back button is pressed
+        public override void OnBackPressed()
+        {
+            //Go back to the generator activity
+            loadPreviousActivity();
+        }
+
+        //This function goes back to the previous activity
+        //It should be called when either the Android back button or the in app back button is pressed
+        public void loadPreviousActivity()
+        {
+            //Create an intent to launch the SaveLoad Activity
+            Intent saveLoadIntent = new Intent(this, typeof(SaveLoadActivity));
+
+            //Start the activity
+            StartActivity(saveLoadIntent);
         }
     }
 }

@@ -63,6 +63,7 @@
   <ItemGroup>
     <Compile Include="BoardStructure.cs" />
     <Compile Include="Analysis.cs" />
+    <Compile Include="Maps.cs" />
     <Compile Include="GeneratorActivity.cs" />
     <Compile Include="SaveLoadActivity.cs" />
     <Compile Include="ViewerActivity.cs" />

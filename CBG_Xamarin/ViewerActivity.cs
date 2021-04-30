@@ -25,6 +25,7 @@ namespace CBG_Xamarin
         private int sheep = 50;
         private int wheat = 50;
         private int wood = 50;
+        private string boardConfig = "base_3";
 
         async protected override void OnCreate(Bundle savedInstanceState)
         {
@@ -33,13 +34,8 @@ namespace CBG_Xamarin
             // Set our view from the "main" layout resource
             SetContentView(Resource.Layout.activity_viewer);
 
-            //Test code for map saving
-            //Currently running the app twice from the same build sometimes crashes because of this saving twice
-            //If you wish to generate multiple boards by restarting the app, build once, then comment out these two lines and build again
-            BoardGenerationConfig foo = new BoardGenerationConfig("foo");
-            foo.save_xml();
+            
 
-            //Get data given from GeneratorActivity
             if(!(Intent.Extras is null))
             {
                 variance = Intent.Extras.GetInt("Variance");
@@ -48,6 +44,7 @@ namespace CBG_Xamarin
                 sheep = Intent.Extras.GetInt("Sheep");
                 wheat = Intent.Extras.GetInt("Wheat");
                 wood = Intent.Extras.GetInt("Wood");
+                boardConfig = Intent.Extras.GetString("BoardConfig");
             }
 
             //Get the back button
@@ -158,7 +155,7 @@ namespace CBG_Xamarin
 
 
             //Wait for the board to be generated
-            Board testBoard = await Task.Run(() => generateBoard(variance));
+            Board testBoard = await Task.Run(() => generateBoard(variance, boardConfig));
 
             //Intentional delay to make the transition from the Generator Activity to the loading screen smoother
             await Task.Delay(800);
@@ -364,14 +361,14 @@ namespace CBG_Xamarin
         //This function generates the board. It happens asynchronously
         //Input all necessary stuff to make board generation happen.
         //Outputs the board
-        public Board generateBoard(int variance)
+        public Board generateBoard(int variance, string boardConfig)
         {
             Board board;
             do
             {
                 //TODO: probably load the board in the generator, and send the actual board to here once generated
                 //For now, create an abritrary board for testing
-                board = new Board("base_3-4");
+                board = new Board(boardConfig);
             }
             while (!stop &&
                   (!analyzer.acceptable_variance(board, variance) ||
@@ -404,6 +401,7 @@ namespace CBG_Xamarin
             generatorIntent.PutExtra("Sheep", sheep + 1);
             generatorIntent.PutExtra("Wheat", wheat + 1);
             generatorIntent.PutExtra("Wood", wood + 1);
+            generatorIntent.PutExtra("BoardConfig", boardConfig);
 
             //Start the activity
             StartActivity(generatorIntent);

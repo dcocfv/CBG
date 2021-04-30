@@ -9,6 +9,111 @@
     android:layout_height="match_parent"
     android:animateLayoutChanges="true"
     android:id="@+id/menuButtons" >
+    <TextView
+        android:text="Number of Players:"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:textStyle="bold"
+        android:id="@+id/NumberPlayersText" />
+    <RadioGroup
+        android:minWidth="25px"
+        android:minHeight="25px"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/NumberPlayersText"
+        android:layout_alignParentLeft="true"
+        android:id="@+id/NumberPlayers">
+        <RadioButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:checked="true"
+            android:text="3"
+            android:id="@+id/ThreePlayers" />
+        <RadioButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="4"
+            android:id="@+id/FourPlayers" />
+        <RadioButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="5"
+            android:id="@+id/FivePlayers" />
+        <RadioButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="6"
+            android:id="@+id/SixPlayers" />
+    </RadioGroup>
+        <TextView
+            android:text="Game Type:"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_below="@id/NumberPlayers"
+            android:textStyle="bold"
+            android:id="@+id/GameTypeText" />
+        <RadioGroup
+            android:minWidth="25px"
+            android:minHeight="25px"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/GameTypeText"
+            android:layout_alignParentLeft="true"
+            android:id="@+id/GameType">
+            <RadioButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checked="true"
+                android:text="Base Game"
+                android:id="@+id/BaseGameButton" />
+            <RadioButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Seafarers"
+                android:id="@+id/SeafarersButton" />
+        </RadioGroup>
+
+
+        <TextView
+            android:text="Scenario:"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_below="@id/GameType"
+            android:textStyle="bold"
+            android:visibility="gone"
+            android:id="@+id/ScenarioText" />
+        <RadioGroup
+            android:minWidth="25px"
+            android:minHeight="25px"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/ScenarioText"
+            android:layout_alignParentLeft="true"
+            android:visibility="gone"
+            android:clickable="false"
+            android:id="@+id/Scenario">
+            <RadioButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checked="true"
+                android:clickable="false"
+                android:text="1: Heading to New Shores"
+                android:id="@+id/BaseGameButton" />
+            <RadioButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:clickable="false"
+                android:text="2: The Four Islands"
+                android:id="@+id/SeafarersButton" />
+        </RadioGroup>
+
         <Button
             android:text="Load Config"
             android:layout_width="wrap_content"

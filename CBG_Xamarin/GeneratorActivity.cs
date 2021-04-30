@@ -24,6 +24,9 @@ namespace CBG_Xamarin
             // Set our view from the "main" layout resource
             SetContentView(Resource.Layout.activity_generator);
 
+            //the board config string
+            string boardConfig = "base_3";
+
             //Get data input into this activity
             if (!(Intent.Extras is null))
             {
@@ -74,6 +77,13 @@ namespace CBG_Xamarin
                     Console.WriteLine("WOOD INPUT GENERATOR: " + wood);
                     SeekBar WoodBar = FindViewById<SeekBar>(Resource.Id.WoodBar);
                     WoodBar.Progress = wood;
+                }
+
+                //Get the board config string
+                string s = Intent.Extras.GetString("BoardConfig");
+                if(s != null)
+                {
+                    boardConfig = s;
                 }
             }
 
@@ -221,6 +231,7 @@ namespace CBG_Xamarin
                     viewerIntent.PutExtra("Sheep", SheepBar.Progress);
                     viewerIntent.PutExtra("Wheat", WheatBar.Progress);
                     viewerIntent.PutExtra("Wood", WoodBar.Progress);
+                    viewerIntent.PutExtra("BoardConfig", boardConfig);
 
                     //Start the activity
                     StartActivity(viewerIntent);
@@ -241,8 +252,6 @@ namespace CBG_Xamarin
         {
             //Create an intent to launch the SaveLoad Activity
             Intent saveLoadIntent = new Intent(this, typeof(SaveLoadActivity));
-
-            //TODO: Add the necessary data to the intent
 
             //Start the activity
             StartActivity(saveLoadIntent);

@@ -963,6 +963,153 @@ public static class Maps
                 map.Add(sea);
                 break;
             }
+            case "seafarers_5_4":
+            case "seafarers_6_4":
+            {
+                TileGenerationSet main_island = new TileGenerationSet();
+                for (short x = -1; x <= 1; x++)
+                {
+                    for (short y = -3; y <= 1; y++)
+                    {
+                        for (short z = -1; z <= 3; z++)
+                        {
+                            if (x + y + z == 0)
+                            {
+                                main_island.location_pool.Add(new HexPosition(x, y, z));
+                            }
+                        }
+                    }
+                }
+                for (short x = -3; x <= 0; x++)
+                {
+                    for (short y = 2; y <= 4; y++)
+                    {
+                        for (short z = -3; z <= -1; z++)
+                        {
+                            if (x + y + z == 0)
+                            {
+                                main_island.location_pool.Add(new HexPosition(x, y, z));
+                            }
+                        }
+                    }
+                }
+
+                main_island.resource_pool = new List<Resource>()
+                {
+                    Resource.wheat, Resource.wheat, Resource.wheat, Resource.wheat, Resource.brick, Resource.brick, Resource.brick, Resource.brick, Resource.brick, Resource.ore, Resource.ore, Resource.ore, Resource.ore, Resource.sheep, Resource.sheep, Resource.sheep, Resource.sheep, Resource.wood, Resource.wood, Resource.wood, Resource.wood
+                };
+
+                main_island.number_pool = new List<ushort>()
+                {
+                    12, 9, 6, 4, 3, 11, 5, 12, 10, 6, 2, 5, 11, 8, 10, 3, 9, 4, 9, 10, 8
+                };
+
+                TileGenerationSet desert = new TileGenerationSet();
+                for (short y = -4; y <= 0; y++)
+                {
+                    for (short z = -2; z <= 2; z++)
+                    {
+                        if (2 + y + z == 0)
+                        {
+                            desert.location_pool.Add(new HexPosition(2, y, z));
+                        }
+                    }
+                }
+
+                desert.resource_pool = new List<Resource>()
+                {
+                    Resource.desert, Resource.desert, Resource.desert, Resource.desert, Resource.desert
+                };
+
+                TileGenerationSet harbors = new TileGenerationSet();
+                harbors.location_pool.Add(new HexPosition(1, 3, (ushort)1));
+                harbors.location_pool.Add(new HexPosition(1, 1, (ushort)1));
+                harbors.location_pool.Add(new HexPosition(1, -4, (ushort)3));
+                harbors.location_pool.Add(new HexPosition(-1, -3, (ushort)4));
+                harbors.location_pool.Add(new HexPosition(-2, -1, (ushort)5));
+                harbors.location_pool.Add(new HexPosition(-2, 1, (ushort)5));
+                harbors.location_pool.Add(new HexPosition(-2, 2, (ushort)4));
+                harbors.location_pool.Add(new HexPosition(-3, 3, (ushort)4));
+                harbors.location_pool.Add(new HexPosition(-4, 5, (ushort)5));
+                harbors.location_pool.Add(new HexPosition(-2, 5, (ushort)0));
+                
+                harbors.resource_pool = new List<Resource>()
+                {
+                    Resource.harbor_brick, Resource.harbor_ore, Resource.harbor_sheep, Resource.harbor_sheep, Resource.harbor_wheat, Resource.harbor_wood, Resource.harbor_any, Resource.harbor_any, Resource.harbor_any, Resource.harbor_any
+                };
+                
+                TileGenerationSet other_island = new TileGenerationSet();
+                for (short y = -6; y <= 1; y++)
+                {
+                    for (short z = -4; z <= 3; z++)
+                    {
+                        if (3 + y + z == 0)
+                        {
+                            other_island.location_pool.Add(new HexPosition(3, y, z));
+                        }
+                    }
+                }
+                other_island.location_pool.Add(new HexPosition(2, 2));
+                other_island.location_pool.Add(new HexPosition(2, 1));
+                for (short y = -3; y <= 2; y++)
+                {
+                    for (short z = 1; z <= 6; z++)
+                    {
+                        if (-3 + y + z == 0)
+                        {
+                            other_island.location_pool.Add(new HexPosition(-3, y, z));
+                        }
+                    }
+                }
+                other_island.location_pool.Add(new HexPosition(-2, -3));
+                other_island.location_pool.Add(new HexPosition(-2, -4));
+                other_island.location_pool.Add(new HexPosition(-1, -5));
+                other_island.location_pool.Add(new HexPosition(0, -5));
+                other_island.location_pool.Add(new HexPosition(1, -6));
+
+                other_island.resource_pool = new List<Resource>()
+                {
+                    Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.gold, Resource.gold, Resource.gold, Resource.wheat, Resource.wheat, Resource.wheat, Resource.brick, Resource.brick, Resource.ore, Resource.ore, Resource.ore, Resource.sheep, Resource.sheep, Resource.sheep, Resource.wood, Resource.wood, Resource.wood
+                };
+
+                other_island.number_pool = new List<ushort>()
+                {
+                    8, 2, 4, 11, 9, 3, 8, 10, 6, 3, 5, 12, 11, 6, 4, 5, 2
+                };
+
+                    System.Diagnostics.Debug.WriteLine("AAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+                    System.Diagnostics.Debug.WriteLine(other_island.location_pool.Count);
+                    System.Diagnostics.Debug.WriteLine(other_island.resource_pool.Count);
+                    System.Diagnostics.Debug.WriteLine(other_island.number_pool.Count);
+                    System.Diagnostics.Debug.WriteLine("BBBBBBBBBBBBBBBBBBBBBBBBBBBB");
+
+                    TileGenerationSet sea = new TileGenerationSet();
+                for (short x = -4; x <= 4; x++)
+                {
+                    for (short y = -7; y <= 5; y++)
+                    {
+                        for (short z = -5; z <= 7; z++)
+                        {
+                            if (x + y + z == 0 && !desert.location_pool.Contains(new HexPosition(x, y, z)) && !main_island.location_pool.Contains(new HexPosition(x, y, z)) && !harbors.location_pool.Contains(new HexPosition(x, y, z)) && !other_island.location_pool.Contains(new HexPosition(x, y, z)))
+                            {
+                                sea.location_pool.Add(new HexPosition(x, y, z));
+                            }
+                        }
+                    }
+                }
+
+                sea.resource_pool = new List<Resource>()
+                {
+                    Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea
+                };
+
+                map.Add(main_island);
+                map.Add(desert);
+                map.Add(other_island);
+                map.Add(harbors);
+                map.Add(sea);
+                break;
+            }
         }
 
         return map;

@@ -32,11 +32,11 @@ namespace CBG_Xamarin
             {
                 //Get the VarianceBar Progress and update it accordingly
                 int variance = Intent.Extras.GetInt("Variance");
-                int brick = Intent.Extras.GetInt("Brick");
-                int ore = Intent.Extras.GetInt("Ore");
-                int wheat = Intent.Extras.GetInt("Wheat");
-                int sheep = Intent.Extras.GetInt("Sheep");
-                int wood = Intent.Extras.GetInt("Wood");
+                int brick = (int)Intent.Extras.GetFloat("Brick");
+                int ore = (int)Intent.Extras.GetFloat("Ore");
+                int wheat = (int)Intent.Extras.GetFloat("Wheat");
+                int sheep = (int)Intent.Extras.GetFloat("Sheep");
+                int wood = (int)Intent.Extras.GetFloat("Wood");
                 if (variance != 0)
                 {
                     Console.WriteLine("VARIANCE INPUT GENERATOR: " + variance);

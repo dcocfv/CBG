@@ -19,6 +19,7 @@ namespace CBG_Xamarin
         private bool stop = false;
 
         //The data that we will get in from the generator acrivity
+        private int originalInputVariance = 5;
         private float variance = 5;
         private float brick = 50;
         private float ore = 50;
@@ -39,6 +40,7 @@ namespace CBG_Xamarin
             if(!(Intent.Extras is null))
             {
                 variance = (float)Intent.Extras.GetInt("Variance");
+                originalInputVariance = (int)variance;
                 brick = (float)Intent.Extras.GetInt("Brick");
                 ore = (float)Intent.Extras.GetInt("Ore");
                 sheep = (float)Intent.Extras.GetInt("Sheep");
@@ -444,7 +446,7 @@ namespace CBG_Xamarin
             Intent generatorIntent = new Intent(this, typeof(GeneratorActivity));
 
             //Add the necessary data to the intent
-            generatorIntent.PutExtra("Variance", variance);
+            generatorIntent.PutExtra("Variance", originalInputVariance);
             generatorIntent.PutExtra("Brick", brick + 1);
             generatorIntent.PutExtra("Ore", ore + 1);
             generatorIntent.PutExtra("Sheep", sheep + 1);

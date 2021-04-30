@@ -19,12 +19,12 @@ namespace CBG_Xamarin
         private bool stop = false;
 
         //The data that we will get in from the generator acrivity
-        private int variance = 5;
-        private int brick = 50;
-        private int ore = 50;
-        private int sheep = 50;
-        private int wheat = 50;
-        private int wood = 50;
+        private float variance = 5;
+        private float brick = 50;
+        private float ore = 50;
+        private float sheep = 50;
+        private float wheat = 50;
+        private float wood = 50;
         private string boardConfig = "base_3";
 
         async protected override void OnCreate(Bundle savedInstanceState)
@@ -38,13 +38,19 @@ namespace CBG_Xamarin
 
             if(!(Intent.Extras is null))
             {
-                variance = Intent.Extras.GetInt("Variance");
-                brick = Intent.Extras.GetInt("Brick");
-                ore = Intent.Extras.GetInt("Ore");
-                sheep = Intent.Extras.GetInt("Sheep");
-                wheat = Intent.Extras.GetInt("Wheat");
-                wood = Intent.Extras.GetInt("Wood");
+                variance = (float)Intent.Extras.GetInt("Variance");
+                brick = (float)Intent.Extras.GetInt("Brick");
+                ore = (float)Intent.Extras.GetInt("Ore");
+                sheep = (float)Intent.Extras.GetInt("Sheep");
+                wheat = (float)Intent.Extras.GetInt("Wheat");
+                wood = (float)Intent.Extras.GetInt("Wood");
                 boardConfig = Intent.Extras.GetString("BoardConfig");
+                
+                System.Diagnostics.Debug.WriteLine("brick: " + brick);
+                System.Diagnostics.Debug.WriteLine("ore: " + ore);
+                System.Diagnostics.Debug.WriteLine("sheep: " + sheep);
+                System.Diagnostics.Debug.WriteLine("wheat: " + wheat);
+                System.Diagnostics.Debug.WriteLine("wood: " + wood);
             }
 
             //Get the back button
@@ -155,7 +161,7 @@ namespace CBG_Xamarin
 
 
             //Wait for the board to be generated
-            Board testBoard = await Task.Run(() => generateBoard(variance, boardConfig));
+            Board testBoard = await Task.Run(() => generateBoard(variance, brick, ore, sheep, wheat, wood, boardConfig));
 
             //Intentional delay to make the transition from the Generator Activity to the loading screen smoother
             await Task.Delay(800);
@@ -361,18 +367,44 @@ namespace CBG_Xamarin
         //This function generates the board. It happens asynchronously
         //Input all necessary stuff to make board generation happen.
         //Outputs the board
-        public Board generateBoard(int variance, string boardConfig)
+        public Board generateBoard(float variance, float brick, float ore, float sheep, float wheat, float wood, string boardConfig)
         {
+            // Initialize stopwatch to measure elapsed time in board generation
+            System.Diagnostics.Stopwatch stopwatch = new System.Diagnostics.Stopwatch();
+            stopwatch.Start();
+            
             Board board;
             do
             {
+                if (brick == 0 && ore == 0 && sheep == 0 && wheat == 0 && wood == 0)
+                    brick = ore = sheep = wheat = wood = 1;
+                    
+                // if time elapses, loosen requirements slightly and continue 
+                if(stopwatch.ElapsedMilliseconds > 5000)
+                {
+                    System.Diagnostics.Debug.WriteLine("5s hit! Loosing requirements...");
+                    System.Diagnostics.Debug.WriteLine("old: " + brick + " " + ore + " " + sheep + " " + wheat + " " + wood);
+
+                    variance += 1;
+
+                    float avg = (brick + ore + sheep + wheat + wood) / 5;
+                    brick += (float)(brick > avg ? (-1 * (brick - avg) * 0.25) : ((avg - brick) * 0.25));
+                    ore += (float)(ore > avg ? (-1 * (ore - avg) * 0.25) : ((avg - ore) * 0.25));
+                    sheep += (float)(sheep > avg ? (-1 * (sheep - avg) * 0.25) : ((avg - sheep) * 0.25));
+                    wheat += (float)(wheat > avg ? (-1 * (wheat - avg) * 0.25) : ((avg - wheat) * 0.25));
+                    wood += (float)(wood > avg ? (-1 * (wood - avg) * 0.25) : ((avg - wood) * 0.25));
+                    System.Diagnostics.Debug.WriteLine("new: " + brick + " " + ore + " " + sheep + " " + wheat + " " + wood);
+                    stopwatch.Restart();
+                }
+                
                 //TODO: probably load the board in the generator, and send the actual board to here once generated
                 //For now, create an abritrary board for testing
                 board = new Board(boardConfig);
             }
             while (!stop &&
                   (!analyzer.acceptable_variance(board, variance) ||
-                  !analyzer.acceptable_distribution_tile(board, 5)));
+                  !analyzer.acceptable_distribution_tile(testBoard, brick, ore, sheep, wheat, wood) ||
+                  !analyzer.no_6_8_adjacent(testBoard));
 
             return board;
         }

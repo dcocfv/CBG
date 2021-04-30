@@ -112,6 +112,24 @@
                 android:clickable="false"
                 android:text="2: The Four Islands"
                 android:id="@+id/SeafarersButton" />
+            <RadioButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:clickable="false"
+                android:text="3: The Fog Islands"
+                android:id="@+id/three" />
+            <RadioButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:clickable="false"
+                android:text="4: Through the Desert"
+                android:id="@+id/four" />
+            <RadioButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:clickable="false"
+                android:text="5: The Forgotten Tribe"
+                android:id="@+id/five" />
         </RadioGroup>
 
         <Button

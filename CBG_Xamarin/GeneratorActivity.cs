@@ -119,6 +119,7 @@ namespace CBG_Xamarin
 
             //Get the back button
             ImageButton backButton = FindViewById<ImageButton>(Resource.Id.backButton);
+            backButton.SetImageResource(Resource.Drawable.BackButton);
 
             //Setup functionality for back button
             backButton.Click += (sender, e) =>

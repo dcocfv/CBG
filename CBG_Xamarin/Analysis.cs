@@ -58,7 +58,7 @@ public static class analyzer
     // Checks the total resource production of the given board, comparing the total resource production of
     // each of the main 5 individual resources to make sure they are within the variance_limit. In reality, not
     // recommended as a setting for typical games, because unbalanced resources are a fun part of the game
-    public static bool acceptable_distribution_tile(Board game_board, float brick, float ore, float sheep, float wheat, float wood, float gold)
+    public static bool acceptable_distribution_tile(Board game_board, float brick, float ore, float sheep, float wheat, float wood, float gold, float errorTolerance)
     {
         ushort[] resource_production_values = new ushort[6];
         float[] resource_production_ratio = new float[6];
@@ -139,7 +139,7 @@ public static class analyzer
             error += Math.Abs(resource_production_ratio[i] - desired_production_ratio[i]);
         }
 
-        if (error > 0.1)
+        if (error > errorTolerance)
             return false;
 
         System.Diagnostics.Debug.WriteLine("actual ratios: " + resource_production_ratio[0] + ", " +

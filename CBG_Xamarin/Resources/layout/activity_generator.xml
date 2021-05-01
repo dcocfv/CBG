@@ -10,7 +10,13 @@
     android:animateLayoutChanges="true"
     android:id="@+id/menuButtons" >
     <ImageButton
-            android:src="@android:drawable/ic_menu_gallery"
+            android:minHeight="100px"
+            android:minWidth="100px"
+            android:maxHeight="100px"
+            android:maxWidth="100px"
+            android:adjustViewBounds="true"
+            android:scaleType="centerCrop"
+            android:padding="0px"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/backButton" />

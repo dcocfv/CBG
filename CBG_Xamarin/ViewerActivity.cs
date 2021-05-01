@@ -62,6 +62,8 @@ namespace CBG_Xamarin
 
             //Get the back button
             ImageButton backButton = FindViewById<ImageButton>(Resource.Id.backButton);
+            backButton.SetImageResource(Resource.Drawable.BackButtonLoading);
+            
 
             //Setup functionality for back button
             backButton.Click += (sender, e) =>
@@ -153,20 +155,17 @@ namespace CBG_Xamarin
                 tips.Text = "..." + possibleTips[randomNumberGenerator.Next(0, possibleTips.Length)] + "...";
                 await Task.Delay(500);
                 tips.Visibility = ViewStates.Visible;
+                if(stopAll || stopSome)
+                {
+                    tips.Text = "";
+                    tips.Visibility = ViewStates.Gone;
+                }
             };
             tips.Visibility = ViewStates.Visible;
             tips.Text = "...Generating Map...";
 
             RelativeLayout menu = FindViewById<RelativeLayout>(Resource.Id.menuButtons);
             menu.SetBackgroundColor(Android.Graphics.Color.Black);
-
-
-
-
-
-
-
-
 
             //Wait for the board to be generated
             //Board testBoard = await Task.Run(() => generateBoard(variance, brick, ore, sheep, wheat, wood, gold, boardConfig));
@@ -181,6 +180,7 @@ namespace CBG_Xamarin
             menu.SetBackgroundColor(Android.Graphics.Color.White);
             tips.Text = "";
             tips.Visibility = ViewStates.Gone;
+            backButton.SetImageResource(Resource.Drawable.BackButton);
 
             //Get a variable for the main relative layout
             RelativeLayout r = FindViewById<RelativeLayout>(Resource.Id.board);
@@ -282,7 +282,7 @@ namespace CBG_Xamarin
                             currentHexImage.SetImageResource(Resource.Drawable.LumberPiece);
                             break;
                         case global::Resource.gold:
-                            currentHexImage.SetImageResource(Resource.Drawable.test);
+                            currentHexImage.SetImageResource(Resource.Drawable.GoldPiece);
                             break;
                         case global::Resource.desert:
                             currentHexImage.SetImageResource(Resource.Drawable.DesertPiece);
@@ -413,6 +413,9 @@ namespace CBG_Xamarin
             System.Diagnostics.Stopwatch stopwatch = new System.Diagnostics.Stopwatch();
             stopwatch.Start();
 
+            float errorTolerance = 0.1F;
+            int errorCounter = 0;
+
             /*float init_brick = brick;
             float init_ore = ore;
             float init_sheep = sheep;
@@ -464,6 +467,14 @@ namespace CBG_Xamarin
                 // if time elapses, loosen requirements slightly and continue 
                 if(stopwatch.ElapsedMilliseconds > 1000)
                 {
+                    //Every 5 seconds increase the error tolerance
+                    errorCounter += 1;
+                    if(errorCounter == 5)
+                    {
+                        errorTolerance += 0.1F;
+                        errorCounter = 0;
+                    }
+
                     System.Diagnostics.Debug.WriteLine("1s hit! Loosing requirements...");
                     System.Diagnostics.Debug.WriteLine("old: " + brick + " " + ore + " " + sheep + " " + wheat + " " + wood + " " + gold);
 
@@ -497,7 +508,7 @@ namespace CBG_Xamarin
             }
             while ((!stopAll && !stopSome) &&
                   (!analyzer.acceptable_variance(board, variance) ||
-                  !analyzer.acceptable_distribution_tile(board, brick, ore, sheep, wheat, wood, gold) ||
+                  !analyzer.acceptable_distribution_tile(board, brick, ore, sheep, wheat, wood, gold, errorTolerance) ||
                   !analyzer.no_6_8_adjacent(board)));
 
             /*float total_init_req = init_brick + init_ore + init_sheep + init_wheat + init_wood + init_gold;

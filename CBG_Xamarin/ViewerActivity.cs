@@ -16,16 +16,20 @@ namespace CBG_Xamarin
     public class ViewerActivity : Activity
     {
         //This tells the board generation thread to stop if the user uses the back button
-        private bool stop = false;
+        private bool stopAll = false;
+        private bool stopSome = false;
 
         //The data that we will get in from the generator acrivity
+        private int originalInputVariance = 5;
         private float variance = 5;
         private float brick = 50;
         private float ore = 50;
         private float sheep = 50;
         private float wheat = 50;
         private float wood = 50;
+        private float gold = 50;
         private string boardConfig = "base_3";
+        private int numThreads = 1;
 
         async protected override void OnCreate(Bundle savedInstanceState)
         {
@@ -39,12 +43,15 @@ namespace CBG_Xamarin
             if(!(Intent.Extras is null))
             {
                 variance = (float)Intent.Extras.GetInt("Variance");
+                originalInputVariance = (int)variance;
                 brick = (float)Intent.Extras.GetInt("Brick");
                 ore = (float)Intent.Extras.GetInt("Ore");
                 sheep = (float)Intent.Extras.GetInt("Sheep");
                 wheat = (float)Intent.Extras.GetInt("Wheat");
                 wood = (float)Intent.Extras.GetInt("Wood");
+                gold = (float)Intent.Extras.GetInt("Gold");
                 boardConfig = Intent.Extras.GetString("BoardConfig");
+                numThreads = Intent.Extras.GetInt("NumThreads");
                 
                 System.Diagnostics.Debug.WriteLine("brick: " + brick);
                 System.Diagnostics.Debug.WriteLine("ore: " + ore);
@@ -147,6 +154,7 @@ namespace CBG_Xamarin
                 await Task.Delay(500);
                 tips.Visibility = ViewStates.Visible;
             };
+            tips.Visibility = ViewStates.Visible;
             tips.Text = "...Generating Map...";
 
             RelativeLayout menu = FindViewById<RelativeLayout>(Resource.Id.menuButtons);
@@ -161,28 +169,29 @@ namespace CBG_Xamarin
 
 
             //Wait for the board to be generated
-            Board testBoard = await Task.Run(() => generateBoard(variance, brick, ore, sheep, wheat, wood, boardConfig));
+            //Board testBoard = await Task.Run(() => generateBoard(variance, brick, ore, sheep, wheat, wood, gold, boardConfig));
+            Board testBoard = await Task.Run(() => genMultipleBoards(variance, brick, ore, sheep, wheat, wood, gold, boardConfig, numThreads));
 
             //Intentional delay to make the transition from the Generator Activity to the loading screen smoother
-            await Task.Delay(800);
+            await Task.Delay(1000);
 
             //Once the board is generated, get rid of the loading icon
-            tips.Visibility = ViewStates.Gone;
-            //Intential delay to make the transition from the loading screen to the board display smoother
-            await Task.Delay(200);
             LoadingIcon.Visibility = ViewStates.Gone;
             LoadingIcon.StopPlayback();
             menu.SetBackgroundColor(Android.Graphics.Color.White);
+            tips.Text = "";
+            tips.Visibility = ViewStates.Gone;
 
             //Get a variable for the main relative layout
             RelativeLayout r = FindViewById<RelativeLayout>(Resource.Id.board);
 
-            if (stop)
+            if (stopAll)
             {
                 Console.WriteLine("STOPPED BECAUSE USER HIT BACK BUTTON");
             }
             else
             {
+                Console.WriteLine("YES!!!!!!!!!!!!");
                 //Get the width and height of our screen (in pixels)
                 int width = Resources.DisplayMetrics.WidthPixels;
                 int height = Resources.DisplayMetrics.HeightPixels;
@@ -364,36 +373,121 @@ namespace CBG_Xamarin
             base.OnRequestPermissionsResult(requestCode, permissions, grantResults);
         }
 
+        public Board genMultipleBoards(float variance, float brick, float ore, float sheep, float wheat, float wood, float gold, string boardConfig, int numBoards)
+        {
+            //Create an array of tasks that is numBoards long. Each task should run the generateBoard function
+            Task<Board>[] boards = new Task<Board>[numBoards];
+            for(int i = 0; i < numBoards; i++)
+            {
+                int id = i;
+                boards[id] = Task.Run(() => generateBoard(variance, brick, ore, sheep, wheat, wood, gold, boardConfig, id));
+            }
+
+            //Wait for a task to be completed
+            while(true)
+            {
+                //Loop through all the tasks
+                for (int i = 0; i < numBoards; i++)
+                {
+                    //If a task is completed
+                    if(boards[i].IsCompleted)
+                    {
+                        //Stop other tasks
+                        stopSome = true;
+                        Console.WriteLine("BOARD " + i + " COMPLETED!");
+                        //Return the output from that task
+                        return boards[i].Result;
+                    }
+                }
+            }
+        }
+
+
         //This function generates the board. It happens asynchronously
         //Input all necessary stuff to make board generation happen.
         //Outputs the board
-        public Board generateBoard(float variance, float brick, float ore, float sheep, float wheat, float wood, string boardConfig)
+        public Board generateBoard(float variance, float brick, float ore, float sheep, float wheat, float wood, float gold, string boardConfig, int my_id)
         {
+            Console.WriteLine("STARTING BOARD GENERATION: " + my_id + ";");
             // Initialize stopwatch to measure elapsed time in board generation
             System.Diagnostics.Stopwatch stopwatch = new System.Diagnostics.Stopwatch();
             stopwatch.Start();
-            
+
+            /*float init_brick = brick;
+            float init_ore = ore;
+            float init_sheep = sheep;
+            float init_wheat = wheat;
+            float init_wood = wood;
+            float init_gold = gold;*/
+
+            //Ignore gold
+            if (boardConfig[0] == 'b' || (boardConfig[0] == 's' && boardConfig[boardConfig.Length - 1] == '2'))
+            {
+                if (brick == 0 && ore == 0 && sheep == 0 && wheat == 0 && wood == 0)
+                {
+                    brick = ore = sheep = wheat = wood = 1;
+                }
+                else
+                {
+                    float total = (brick + ore + sheep + wheat + wood);
+                    brick = brick / total;
+                    ore = ore / total;
+                    sheep = sheep / total;
+                    wheat = wheat / total;
+                    wood = wood / total;
+                }
+            }
+            else//dont ignore gold
+            {
+                if (brick == 0 && ore == 0 && sheep == 0 && wheat == 0 && wood == 0 && gold == 0)
+                {
+                    brick = ore = sheep = wheat = wood = gold = 1;
+
+                }
+                else
+                {
+                    float total = (brick + ore + sheep + wheat + wood + gold);
+                    brick = brick / total;
+                    ore = ore / total;
+                    sheep = sheep / total;
+                    wheat = wheat / total;
+                    wood = wood / total;
+                    gold = gold / total;
+                }
+            }
+
+            Console.WriteLine("REQUIREMENTS!!!!!! " + brick + " " + ore + " " + sheep + " " + wheat + " " + wood + " " + gold);
+
             Board board;
             do
             {
-                if (brick == 0 && ore == 0 && sheep == 0 && wheat == 0 && wood == 0)
-                    brick = ore = sheep = wheat = wood = 1;
-                    
                 // if time elapses, loosen requirements slightly and continue 
-                if(stopwatch.ElapsedMilliseconds > 5000)
+                if(stopwatch.ElapsedMilliseconds > 1000)
                 {
-                    System.Diagnostics.Debug.WriteLine("5s hit! Loosing requirements...");
-                    System.Diagnostics.Debug.WriteLine("old: " + brick + " " + ore + " " + sheep + " " + wheat + " " + wood);
+                    System.Diagnostics.Debug.WriteLine("1s hit! Loosing requirements...");
+                    System.Diagnostics.Debug.WriteLine("old: " + brick + " " + ore + " " + sheep + " " + wheat + " " + wood + " " + gold);
 
-                    variance += 1;
+                    variance += 0.05F;
 
-                    float avg = (brick + ore + sheep + wheat + wood) / 5;
-                    brick += (float)(brick > avg ? (-1 * (brick - avg) * 0.25) : ((avg - brick) * 0.25));
-                    ore += (float)(ore > avg ? (-1 * (ore - avg) * 0.25) : ((avg - ore) * 0.25));
-                    sheep += (float)(sheep > avg ? (-1 * (sheep - avg) * 0.25) : ((avg - sheep) * 0.25));
-                    wheat += (float)(wheat > avg ? (-1 * (wheat - avg) * 0.25) : ((avg - wheat) * 0.25));
-                    wood += (float)(wood > avg ? (-1 * (wood - avg) * 0.25) : ((avg - wood) * 0.25));
-                    System.Diagnostics.Debug.WriteLine("new: " + brick + " " + ore + " " + sheep + " " + wheat + " " + wood);
+
+                    float avg = 0;
+                    //Ignore gold
+                    if (boardConfig[0] == 'b' || (boardConfig[0] == 's' && boardConfig[boardConfig.Length - 1] == '2'))
+                    {
+                        avg = (brick + ore + sheep + wheat + wood) / 5;
+                    }
+                    else//dont ignore gold
+                    {
+                        avg = (brick + ore + sheep + wheat + wood + gold) / 6;
+                    }
+                    
+                    brick += (float)(brick > avg ? (-1 * (brick - avg) * 0.05) : ((avg - brick) * 0.05));
+                    ore += (float)(ore > avg ? (-1 * (ore - avg) * 0.05) : ((avg - ore) * 0.05));
+                    sheep += (float)(sheep > avg ? (-1 * (sheep - avg) * 0.05) : ((avg - sheep) * 0.05));
+                    wheat += (float)(wheat > avg ? (-1 * (wheat - avg) * 0.05) : ((avg - wheat) * 0.05));
+                    wood += (float)(wood > avg ? (-1 * (wood - avg) * 0.05) : ((avg - wood) * 0.05));
+                    gold += (float)(gold > avg ? (-1 * (gold - avg) * 0.05) : ((avg - gold) * 0.05));
+                    System.Diagnostics.Debug.WriteLine("new: " + brick + " " + ore + " " + sheep + " " + wheat + " " + wood + " " + gold);
                     stopwatch.Restart();
                 }
                 
@@ -401,10 +495,21 @@ namespace CBG_Xamarin
                 //For now, create an abritrary board for testing
                 board = new Board(boardConfig);
             }
-            while (!stop &&
+            while ((!stopAll && !stopSome) &&
                   (!analyzer.acceptable_variance(board, variance) ||
-                  !analyzer.acceptable_distribution_tile(board, brick, ore, sheep, wheat, wood) ||
+                  !analyzer.acceptable_distribution_tile(board, brick, ore, sheep, wheat, wood, gold) ||
                   !analyzer.no_6_8_adjacent(board)));
+
+            /*float total_init_req = init_brick + init_ore + init_sheep + init_wheat + init_wood + init_gold;
+            float total_end_req = brick + ore + sheep + wheat + wood + gold;
+            float error = Math.Abs(init_brick / total_init_req - brick / total_end_req) + Math.Abs(init_ore / total_init_req - ore / total_end_req) +
+                Math.Abs(init_sheep / total_init_req - sheep / total_end_req) + Math.Abs(init_wheat / total_init_req - wheat / total_end_req) +
+                Math.Abs(init_wood / total_init_req - wood / total_end_req) + Math.Abs(init_gold / total_init_req - gold / total_end_req);
+            System.Diagnostics.Debug.WriteLine("init req: " + init_brick / total_init_req + " " + init_ore / total_init_req + " " +
+                init_sheep / total_init_req + " " + init_wheat / total_init_req + " " + init_wood / total_init_req);
+            System.Diagnostics.Debug.WriteLine("end req: " + brick / total_end_req + " " + ore / total_end_req + " " +
+                sheep / total_end_req + " " + wheat / total_end_req + " " + wood / total_end_req);
+            System.Diagnostics.Debug.WriteLine("total error (% off desired model): " + error);*/
 
             return board;
         }
@@ -421,19 +526,21 @@ namespace CBG_Xamarin
         public void loadPreviousActivity()
         {
             //Stop the board generation
-            stop = true;
+            stopAll = true;
 
             //Create an intent to launch the Generator Activity
             Intent generatorIntent = new Intent(this, typeof(GeneratorActivity));
 
             //Add the necessary data to the intent
-            generatorIntent.PutExtra("Variance", variance);
+            generatorIntent.PutExtra("Variance", originalInputVariance);
             generatorIntent.PutExtra("Brick", brick + 1);
             generatorIntent.PutExtra("Ore", ore + 1);
             generatorIntent.PutExtra("Sheep", sheep + 1);
             generatorIntent.PutExtra("Wheat", wheat + 1);
             generatorIntent.PutExtra("Wood", wood + 1);
+            generatorIntent.PutExtra("Gold", gold + 1);
             generatorIntent.PutExtra("BoardConfig", boardConfig);
+            generatorIntent.PutExtra("NumThreads", numThreads);
 
             //Start the activity
             StartActivity(generatorIntent);

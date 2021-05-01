@@ -58,59 +58,89 @@ public static class analyzer
     // Checks the total resource production of the given board, comparing the total resource production of
     // each of the main 5 individual resources to make sure they are within the variance_limit. In reality, not
     // recommended as a setting for typical games, because unbalanced resources are a fun part of the game
-    public static bool acceptable_distribution_tile(Board game_board, float brick, float ore, float sheep, float wheat, float wood)
+    public static bool acceptable_distribution_tile(Board game_board, float brick, float ore, float sheep, float wheat, float wood, float gold)
     {
-        ushort[] resource_production_values = new ushort[5];
-        float[] resource_production_ratio = new float[5];
+        ushort[] resource_production_values = new ushort[6];
+        float[] resource_production_ratio = new float[6];
 
-        float total_desired_production = Convert.ToSingle(brick + ore + sheep + wheat + wood);
-        float[] desired_production_ratio = {
-             brick/total_desired_production,
-             ore/total_desired_production,
-             sheep/total_desired_production,
-             wheat/total_desired_production,
-             wood/total_desired_production
-        };
+        //number of each resource tile
+        float numBrick = 0;
+        float numOre = 0;
+        float numSheep = 0;
+        float numWheat = 0;
+        float numWood = 0;
+        float numGold = 0;
 
-        System.Diagnostics.Debug.WriteLine("desired ratios: " + desired_production_ratio[0] + ", " +
-            desired_production_ratio[1] + ", " + desired_production_ratio[2] + ", " +
-            desired_production_ratio[3] + ", " + desired_production_ratio[4]);
-
-        foreach(KeyValuePair<HexPosition, Hex> tile in game_board.tiles)
+        foreach (KeyValuePair<HexPosition, Hex> tile in game_board.tiles)
         {
             switch(tile.Value.type)
             {
                 case Resource.brick:
+                    numBrick += 1;
                     resource_production_values[0] += production.production_from_number(tile.Value.number);
                     break;
-                case Resource.wood:
+                case Resource.ore:
+                    numOre += 1;
                     resource_production_values[1] += production.production_from_number(tile.Value.number);
                     break;
-                case Resource.ore:
+                case Resource.sheep:
+                    numSheep += 1;
                     resource_production_values[2] += production.production_from_number(tile.Value.number);
                     break;
-                case Resource.sheep:
+                case Resource.wheat:
+                    numWheat += 1;
                     resource_production_values[3] += production.production_from_number(tile.Value.number);
                     break;
-                case Resource.wheat:
+                case Resource.wood:
+                    numWood += 1;
                     resource_production_values[4] += production.production_from_number(tile.Value.number);
+                    break;
+                case Resource.gold:
+                    numGold += 1;
+                    resource_production_values[5] += production.production_from_number(tile.Value.number);
                     break;
             }
         }
+        float numTiles = numBrick + numOre + numSheep + numWheat + numWood + numGold;
+
+        //This might not be the best modifier here but I don't have the time to do more testing
+        float modifier = 1.0F;
+        float[] desired_production_ratio = {
+             brick + modifier*(brick - (numBrick/numTiles)),
+             ore + modifier*(ore - (numOre/numTiles)),
+             sheep + modifier*(sheep - (numSheep/numTiles)),
+             wheat + modifier*(wheat - (numWheat/numTiles)),
+             wood + modifier*(wood - (numWood/numTiles)),
+             gold + modifier*(gold - (numGold/numTiles))
+        };
+
+        System.Diagnostics.Debug.WriteLine("desired ratios: " + desired_production_ratio[0] + ", " +
+            desired_production_ratio[1] + ", " + desired_production_ratio[2] + ", " +
+            desired_production_ratio[3] + ", " + desired_production_ratio[4] + ", " + desired_production_ratio[5]);
 
         ushort total_resource_production = 0;
-        for (int i = 0; i < 5; i++)
-            total_resource_production += resource_production_values[i];
-
-        for (int i = 0; i < 5; i++)
+        for (int i = 0; i < 6; i++)
         {
-            resource_production_ratio[i] = resource_production_values[i] / Convert.ToSingle(total_resource_production);
-
-            if (Math.Abs(resource_production_ratio[i] - desired_production_ratio[i]) > 0.1)
+            if (i == 5 && numGold == 0)
             {
-                return false;
+                break;
             }
+            total_resource_production += resource_production_values[i];
         }
+
+        float error = 0;
+        for (int i = 0; i < 6; i++)
+        {
+            if (i == 5 && numGold == 0)
+            {
+                break;
+            }
+            resource_production_ratio[i] = resource_production_values[i] / Convert.ToSingle(total_resource_production);
+            error += Math.Abs(resource_production_ratio[i] - desired_production_ratio[i]);
+        }
+
+        if (error > 0.1)
+            return false;
 
         System.Diagnostics.Debug.WriteLine("actual ratios: " + resource_production_ratio[0] + ", " +
             resource_production_ratio[1] + ", " + resource_production_ratio[2] + ", " +

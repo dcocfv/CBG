@@ -32,16 +32,18 @@ namespace CBG_Xamarin
             {
                 //Get the VarianceBar Progress and update it accordingly
                 int variance = Intent.Extras.GetInt("Variance");
-                int brick = Intent.Extras.GetInt("Brick");
-                int ore = Intent.Extras.GetInt("Ore");
-                int wheat = Intent.Extras.GetInt("Wheat");
-                int sheep = Intent.Extras.GetInt("Sheep");
-                int wood = Intent.Extras.GetInt("Wood");
+                int brick = (int)Intent.Extras.GetFloat("Brick");
+                int ore = (int)Intent.Extras.GetFloat("Ore");
+                int wheat = (int)Intent.Extras.GetFloat("Wheat");
+                int sheep = (int)Intent.Extras.GetFloat("Sheep");
+                int wood = (int)Intent.Extras.GetFloat("Wood");
+                int gold = (int)Intent.Extras.GetFloat("Gold");
+                int numThreads = Intent.Extras.GetInt("NumThreads");
                 if (variance != 0)
                 {
                     Console.WriteLine("VARIANCE INPUT GENERATOR: " + variance);
                     SeekBar VarianceBar = FindViewById<SeekBar>(Resource.Id.VarianceBar);
-                    VarianceBar.Progress = variance - 3;
+                    VarianceBar.Progress = variance - 5;
                 }
                 if(brick != 0)
                 {
@@ -78,12 +80,40 @@ namespace CBG_Xamarin
                     SeekBar WoodBar = FindViewById<SeekBar>(Resource.Id.WoodBar);
                     WoodBar.Progress = wood;
                 }
+                if (gold != 0)
+                {
+                    gold -= 1;
+                    Console.WriteLine("GOLD INPUT GENERATOR: " + gold);
+                    SeekBar GoldBar = FindViewById<SeekBar>(Resource.Id.GoldBar);
+                    GoldBar.Progress = gold;
+                }
 
                 //Get the board config string
                 string s = Intent.Extras.GetString("BoardConfig");
                 if(s != null)
                 {
                     boardConfig = s;
+                }
+
+                if (numThreads != 0)
+                {
+                    TextView NumThreadsText = FindViewById<TextView>(Resource.Id.NumThreads);
+                    NumThreadsText.Text = "Num Threads: " + numThreads;
+
+                    Console.WriteLine("NUMTHREADS INPUT GENERATOR: " + numThreads);
+                    SeekBar NumThreadsBar = FindViewById<SeekBar>(Resource.Id.NumThreadsBar);
+                    NumThreadsBar.Progress = numThreads - 1;
+                }
+                else
+                {
+                    if (System.Environment.ProcessorCount >= 1 && System.Environment.ProcessorCount <= 10)
+                    {
+                        TextView NumThreadsText = FindViewById<TextView>(Resource.Id.NumThreads);
+                        NumThreadsText.Text = "Num Threads: " + System.Environment.ProcessorCount;
+
+                        SeekBar NumThreadsBar = FindViewById<SeekBar>(Resource.Id.NumThreadsBar);
+                        NumThreadsBar.Progress = System.Environment.ProcessorCount - 1;
+                    }
                 }
             }
 
@@ -138,7 +168,7 @@ namespace CBG_Xamarin
             Button ResourceOptions = FindViewById<Button>(Resource.Id.ResourceOptions);
             ResourceOptions.Click += (sender, e) =>
             {
-                View[] views = new View[10];
+                View[] views = new View[12];
 
                 views[0] = FindViewById<TextView>(Resource.Id.Brick);
                 views[1] = FindViewById<SeekBar>(Resource.Id.BrickBar);
@@ -155,8 +185,15 @@ namespace CBG_Xamarin
                 views[8] = FindViewById<TextView>(Resource.Id.Wood);
                 views[9] = FindViewById<SeekBar>(Resource.Id.WoodBar);
 
+                views[10] = FindViewById<TextView>(Resource.Id.Gold);
+                views[11] = FindViewById<SeekBar>(Resource.Id.GoldBar);
+
                 for (int i = 0; i < views.Length; i++)
                 {
+                    if(i >= 10 && (boardConfig[0] == 'b' || (boardConfig[0] == 's' && boardConfig[boardConfig.Length - 1] == '2')))
+                    {
+                        break;
+                    }
                     if(views[i].Visibility == ViewStates.Visible)
                     {
                         views[i].Visibility = ViewStates.Gone;
@@ -190,6 +227,16 @@ namespace CBG_Xamarin
                 }
             };
 
+            //Update the Number of threads whenever it is changed
+            SeekBar NumThreadsBar2 = FindViewById<SeekBar>(Resource.Id.NumThreadsBar);
+            NumThreadsBar2.ProgressChanged += (sender, e) =>
+            {
+                TextView NumThreadsText2 = FindViewById<TextView>(Resource.Id.NumThreads);
+                int temp = NumThreadsBar2.Progress + 1;
+                NumThreadsText2.Text = "Num Threads: " + temp;
+            };
+
+
             //Get the generate board button
             Button GenerateBoard = FindViewById<Button>(Resource.Id.GenerateBoard);
 
@@ -217,9 +264,16 @@ namespace CBG_Xamarin
                     SeekBar WoodBar = FindViewById<SeekBar>(Resource.Id.WoodBar);
                     Console.WriteLine("Wood: " + WoodBar.Progress);
 
+                    SeekBar GoldBar = FindViewById<SeekBar>(Resource.Id.GoldBar);
+                    Console.WriteLine("Gold: " + GoldBar.Progress);
+
                     SeekBar VarianceBar = FindViewById<SeekBar>(Resource.Id.VarianceBar);
-                    int varianceBarProgress = VarianceBar.Progress + 3;
+                    int varianceBarProgress = VarianceBar.Progress + 5;
                     Console.WriteLine("Variance: " + varianceBarProgress);
+
+                    SeekBar NumThreadsBar = FindViewById<SeekBar>(Resource.Id.NumThreadsBar);
+                    int numThreadsBarProgress = NumThreadsBar.Progress + 1;
+                    Console.WriteLine("NumTHREADS: " + numThreadsBarProgress);
 
                     //Create an intent to launch the Viewer Activity
                     Intent viewerIntent = new Intent(this, typeof(ViewerActivity));
@@ -231,7 +285,9 @@ namespace CBG_Xamarin
                     viewerIntent.PutExtra("Sheep", SheepBar.Progress);
                     viewerIntent.PutExtra("Wheat", WheatBar.Progress);
                     viewerIntent.PutExtra("Wood", WoodBar.Progress);
+                    viewerIntent.PutExtra("Gold", GoldBar.Progress);
                     viewerIntent.PutExtra("BoardConfig", boardConfig);
+                    viewerIntent.PutExtra("NumThreads", numThreadsBarProgress);
 
                     //Start the activity
                     StartActivity(viewerIntent);

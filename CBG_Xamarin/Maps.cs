@@ -1077,13 +1077,7 @@ public static class Maps
                     8, 2, 4, 11, 9, 3, 8, 10, 6, 3, 5, 12, 11, 6, 4, 5, 2
                 };
 
-                    System.Diagnostics.Debug.WriteLine("AAAAAAAAAAAAAAAAAAAAAAAAAAAA");
-                    System.Diagnostics.Debug.WriteLine(other_island.location_pool.Count);
-                    System.Diagnostics.Debug.WriteLine(other_island.resource_pool.Count);
-                    System.Diagnostics.Debug.WriteLine(other_island.number_pool.Count);
-                    System.Diagnostics.Debug.WriteLine("BBBBBBBBBBBBBBBBBBBBBBBBBBBB");
-
-                    TileGenerationSet sea = new TileGenerationSet();
+                TileGenerationSet sea = new TileGenerationSet();
                 for (short x = -4; x <= 4; x++)
                 {
                     for (short y = -7; y <= 5; y++)

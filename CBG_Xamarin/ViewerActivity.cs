@@ -414,7 +414,7 @@ namespace CBG_Xamarin
             stopwatch.Start();
 
             float errorTolerance = 0.1F;
-            int errorCounter = 0;
+            //int errorCounter = 0;
 
             /*float init_brick = brick;
             float init_ore = ore;
@@ -423,41 +423,12 @@ namespace CBG_Xamarin
             float init_wood = wood;
             float init_gold = gold;*/
 
-            //Ignore gold
-            if (boardConfig[0] == 'b' || (boardConfig[0] == 's' && boardConfig[boardConfig.Length - 1] == '2'))
-            {
-                if (brick == 0 && ore == 0 && sheep == 0 && wheat == 0 && wood == 0)
-                {
-                    brick = ore = sheep = wheat = wood = 1;
-                }
-                else
-                {
-                    float total = (brick + ore + sheep + wheat + wood);
-                    brick = brick / total;
-                    ore = ore / total;
-                    sheep = sheep / total;
-                    wheat = wheat / total;
-                    wood = wood / total;
-                }
-            }
-            else//dont ignore gold
-            {
-                if (brick == 0 && ore == 0 && sheep == 0 && wheat == 0 && wood == 0 && gold == 0)
-                {
-                    brick = ore = sheep = wheat = wood = gold = 1;
-
-                }
-                else
-                {
-                    float total = (brick + ore + sheep + wheat + wood + gold);
-                    brick = brick / total;
-                    ore = ore / total;
-                    sheep = sheep / total;
-                    wheat = wheat / total;
-                    wood = wood / total;
-                    gold = gold / total;
-                }
-            }
+            brick += 1;
+            ore += 1;
+            sheep += 1;
+            wheat += 1;
+            wood += 1;
+            gold += 1;
 
             Console.WriteLine("REQUIREMENTS!!!!!! " + brick + " " + ore + " " + sheep + " " + wheat + " " + wood + " " + gold);
 
@@ -467,14 +438,6 @@ namespace CBG_Xamarin
                 // if time elapses, loosen requirements slightly and continue 
                 if(stopwatch.ElapsedMilliseconds > 1000)
                 {
-                    //Every 5 seconds increase the error tolerance
-                    errorCounter += 1;
-                    if(errorCounter == 5)
-                    {
-                        errorTolerance += 0.1F;
-                        errorCounter = 0;
-                    }
-
                     System.Diagnostics.Debug.WriteLine("1s hit! Loosing requirements...");
                     System.Diagnostics.Debug.WriteLine("old: " + brick + " " + ore + " " + sheep + " " + wheat + " " + wood + " " + gold);
 

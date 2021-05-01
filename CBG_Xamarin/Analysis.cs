@@ -101,18 +101,26 @@ public static class analyzer
                     break;
             }
         }
-        float numTiles = numBrick + numOre + numSheep + numWheat + numWood + numGold;
 
-        //This might not be the best modifier here but I don't have the time to do more testing
-        float modifier = 1.0F;
         float[] desired_production_ratio = {
-             brick + modifier*(brick - (numBrick/numTiles)),
-             ore + modifier*(ore - (numOre/numTiles)),
-             sheep + modifier*(sheep - (numSheep/numTiles)),
-             wheat + modifier*(wheat - (numWheat/numTiles)),
-             wood + modifier*(wood - (numWood/numTiles)),
-             gold + modifier*(gold - (numGold/numTiles))
+             numBrick*brick,
+             numOre*ore,
+             numSheep*sheep,
+             numWheat*wheat,
+             numWood*wood,
+             numGold*gold
         };
+
+        int total = 0;
+        for(int i = 0; i < desired_production_ratio.Length; i++)
+        {
+            total += (int)desired_production_ratio[i];
+        }
+
+        for (int i = 0; i < desired_production_ratio.Length; i++)
+        {
+            desired_production_ratio[i] = desired_production_ratio[i]/total;
+        }
 
         System.Diagnostics.Debug.WriteLine("desired ratios: " + desired_production_ratio[0] + ", " +
             desired_production_ratio[1] + ", " + desired_production_ratio[2] + ", " +
@@ -144,7 +152,7 @@ public static class analyzer
 
         System.Diagnostics.Debug.WriteLine("actual ratios: " + resource_production_ratio[0] + ", " +
             resource_production_ratio[1] + ", " + resource_production_ratio[2] + ", " +
-            resource_production_ratio[3] + ", " + resource_production_ratio[4]);
+            resource_production_ratio[3] + ", " + resource_production_ratio[4] + ", " + resource_production_ratio[5]);
 
         return true;
     }

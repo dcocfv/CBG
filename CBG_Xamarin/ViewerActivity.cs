@@ -440,8 +440,8 @@ namespace CBG_Xamarin
                         fogImage.TranslationY = (int)yPos;
 
                         //Adjust max size of the tiles
-                        fogImage.SetMaxHeight(dimensions);
-                        fogImage.SetMaxWidth(dimensions);
+                        fogImage.SetMaxHeight(dimensionsHeight);
+                        fogImage.SetMaxWidth(dimensionsWidth);
                         fogImage.SetAdjustViewBounds(true);
 
                         //Set fog image

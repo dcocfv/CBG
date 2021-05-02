@@ -73,32 +73,35 @@ public static class analyzer
 
         foreach (KeyValuePair<HexPosition, Hex> tile in game_board.tiles)
         {
-            switch(tile.Value.type)
+            if (tile.Value.number != 0)
             {
-                case Resource.brick:
-                    numBrick += 1;
-                    resource_production_values[0] += production.production_from_number(tile.Value.number);
-                    break;
-                case Resource.ore:
-                    numOre += 1;
-                    resource_production_values[1] += production.production_from_number(tile.Value.number);
-                    break;
-                case Resource.sheep:
-                    numSheep += 1;
-                    resource_production_values[2] += production.production_from_number(tile.Value.number);
-                    break;
-                case Resource.wheat:
-                    numWheat += 1;
-                    resource_production_values[3] += production.production_from_number(tile.Value.number);
-                    break;
-                case Resource.wood:
-                    numWood += 1;
-                    resource_production_values[4] += production.production_from_number(tile.Value.number);
-                    break;
-                case Resource.gold:
-                    numGold += 1;
-                    resource_production_values[5] += production.production_from_number(tile.Value.number);
-                    break;
+                switch (tile.Value.type)
+                {
+                    case Resource.brick:
+                        numBrick += 1;
+                        resource_production_values[0] += production.production_from_number(tile.Value.number);
+                        break;
+                    case Resource.ore:
+                        numOre += 1;
+                        resource_production_values[1] += production.production_from_number(tile.Value.number);
+                        break;
+                    case Resource.sheep:
+                        numSheep += 1;
+                        resource_production_values[2] += production.production_from_number(tile.Value.number);
+                        break;
+                    case Resource.wheat:
+                        numWheat += 1;
+                        resource_production_values[3] += production.production_from_number(tile.Value.number);
+                        break;
+                    case Resource.wood:
+                        numWood += 1;
+                        resource_production_values[4] += production.production_from_number(tile.Value.number);
+                        break;
+                    case Resource.gold:
+                        numGold += 1;
+                        resource_production_values[5] += production.production_from_number(tile.Value.number);
+                        break;
+                }
             }
         }
 

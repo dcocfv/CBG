@@ -232,7 +232,15 @@ namespace CBG_Xamarin
                         boardWidth += 0.5;
                     }
                 }
-                boardWidth += 0.75;
+                if (max % 2 == 0)
+                {
+                    boardWidth += 1;
+                }
+                if (max % 2 == 1)
+                {
+                    boardWidth += 0.75;
+                }
+                
                 for (int i = -1; i > min; i--)
                 {
                     if (((-1) * i) % 2 == 0)
@@ -245,15 +253,67 @@ namespace CBG_Xamarin
                         boardWidth += 0.5;
                     }
                 }
-                boardWidth += 0.75;
+                if ((-1.0*min) % 2 == 0)
+                {
+                    boardWidth += 1;
+                }
+                if ((-1.0*min) % 2 == 1)
+                {
+                    boardWidth += 0.75;
+                }
+
+                float offsetWidth = -.75F * (Math.Abs(max) - Math.Abs(min));
+
+
+
+
+                //Find the max and min values in the y direction on the board
+                max = 0;
+                min = 0;
+                first = true;
+
+                foreach (KeyValuePair<HexPosition, Hex> tile in testBoard.tiles)
+                {
+                    if (first || tile.Key.y_pos > max)
+                    {
+                        first = false;
+                        max = tile.Key.y_pos;
+                    }
+                    if (first || tile.Key.y_pos < min)
+                    {
+                        first = false;
+                        min = tile.Key.y_pos;
+                    }
+                }
+
+                //Calculate the board width (its complicated because of flat tops)
+                double boardHeight = 1;
+                for (int i = 1; i <= max; i++)
+                {
+                    boardHeight += 1;
+                }
+
+                for (int i = -1; i >= min; i--)
+                {
+                    boardHeight += 1;
+                }
+
+                int offsetHeight = (Math.Abs(max) - Math.Abs(min));
+
 
                 Console.WriteLine("BOARDWIDTH: " + boardWidth);
+                Console.WriteLine("BOARDHEIGHT: " + boardHeight);
+                Console.WriteLine("OFFSETWIDTH: " + offsetWidth);
+                Console.WriteLine("OFFSETHEIGHT: " + offsetHeight);
 
-                //The size (height and width) in pixels of the images to be displayed on screen (we celiing it so it doesn't go 1 pixel off screen)
-                int dimensions = (int)Math.Ceiling(width / boardWidth);
+                //The size (height and width) in pixels of the images to be displayed on screen (we floor it so it doesn't go 1 pixel off screen)
+                int dimensionsWidth = (int)Math.Ceiling(width / boardWidth);//196
+                int dimensionsHeight = (int)Math.Ceiling(height / boardHeight);//256
 
-                //The "size" of the hexagons (used in positioning the hexes in the grid)
-                var size = dimensions / 2;
+                //Get the smaller of the two
+                //int dimensions = Math.Max(dimensionsWidth, dimensionsHeight);
+
+                var size = dimensionsWidth / 2;
 
                 //Loop through all the tiles in the board
                 foreach (KeyValuePair<HexPosition, Hex> currentTile in testBoard.tiles)
@@ -322,13 +382,17 @@ namespace CBG_Xamarin
                     var xPos = size * ((3.0 / 2) * currentTile.Key.x_pos);
                     var yPos = size * ((Math.Sqrt(3) / 2) * currentTile.Key.x_pos + (Math.Sqrt(3)) * currentTile.Key.z_pos);
 
+                    //Offset the board so that it is in the center of the screen
+                    xPos += offsetWidth * (dimensionsWidth / 2);
+                    yPos += offsetHeight * (dimensionsHeight / 2);
+
                     //Move the hexagon into place
                     currentHexImage.TranslationX = (int)xPos;
                     currentHexImage.TranslationY = (int)yPos;
 
                     //Adjust max size of the tiles
-                    currentHexImage.SetMaxHeight(dimensions);
-                    currentHexImage.SetMaxWidth(dimensions);
+                    currentHexImage.SetMaxHeight(dimensionsHeight);
+                    currentHexImage.SetMaxWidth(dimensionsWidth);
                     currentHexImage.SetAdjustViewBounds(true);
 
                     //If the tile produces anything
@@ -343,15 +407,15 @@ namespace CBG_Xamarin
                         currentChit.SetText(currentTile.Value.number.ToString().ToCharArray(), 0, currentTile.Value.number.ToString().Length);
 
                         //Set the location of the chit
-                        currentChit.TranslationX = (int)xPos + (dimensions / 3);
+                        currentChit.TranslationX = (int)xPos + (dimensionsWidth / 3);
                         if (currentTile.Value.number.ToString().Length == 1)
                         {
-                            currentChit.TranslationX += (dimensions / 10);
+                            currentChit.TranslationX += (dimensionsWidth / 10);
                         }
-                        currentChit.TranslationY = (int)yPos + (dimensions / 5);
+                        currentChit.TranslationY = (int)yPos + (dimensionsWidth / 5);
 
                         //Scale the chit
-                        currentChit.SetTextSize(Android.Util.ComplexUnitType.Px, dimensions / (float)2.7);
+                        currentChit.SetTextSize(Android.Util.ComplexUnitType.Px, dimensionsWidth / (float)2.7);
 
                         //Set color
                         if (currentTile.Value.number == 8 || currentTile.Value.number == 6)

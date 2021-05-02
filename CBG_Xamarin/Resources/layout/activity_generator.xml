@@ -184,7 +184,7 @@
             android:id="@+id/GoldBar" />
         
         <TextView
-            android:text="Variance"
+            android:text="Vertex Variance"
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -230,7 +230,7 @@
             android:id="@+id/OtherOptions"/>
 
         <Button
-            android:text="Generate New Board"
+            android:text="Generate Board"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"

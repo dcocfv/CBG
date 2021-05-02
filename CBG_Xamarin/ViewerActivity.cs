@@ -398,33 +398,52 @@ namespace CBG_Xamarin
                     //If the tile produces anything
                     if (currentTile.Value.number != 0)
                     {
+                        //Create a new image and add it to the layout
+                        ImageView chitImage = new ImageView(this);
+                        r.AddView(chitImage);
 
-                        //Create a new textView and add it to the layout
-                        TextView currentChit = new TextView(this);
-                        r.AddView(currentChit);
+                        //Move the hexagon into place
+                        chitImage.TranslationX = (int)xPos;
+                        chitImage.TranslationY = (int)yPos;
 
-                        //Set the number of the chit
-                        currentChit.SetText(currentTile.Value.number.ToString().ToCharArray(), 0, currentTile.Value.number.ToString().Length);
+                        //Adjust max size of the tiles
+                        chitImage.SetMaxHeight(dimensionsHeight);
+                        chitImage.SetMaxWidth(dimensionsWidth);
+                        chitImage.SetAdjustViewBounds(true);
 
-                        //Set the location of the chit
-                        currentChit.TranslationX = (int)xPos + (dimensionsWidth / 3);
-                        if (currentTile.Value.number.ToString().Length == 1)
+                        //Set the chit image
+                        switch (currentTile.Value.number)
                         {
-                            currentChit.TranslationX += (dimensionsWidth / 10);
-                        }
-                        currentChit.TranslationY = (int)yPos + (dimensionsWidth / 5);
-
-                        //Scale the chit
-                        currentChit.SetTextSize(Android.Util.ComplexUnitType.Px, dimensionsWidth / (float)2.7);
-
-                        //Set color
-                        if (currentTile.Value.number == 8 || currentTile.Value.number == 6)
-                        {
-                            currentChit.SetTextColor(Android.Graphics.Color.Red);
-                        }
-                        else
-                        {
-                            currentChit.SetTextColor(Android.Graphics.Color.LightGray);
+                            case 2:
+                                chitImage.SetImageResource(Resource.Drawable.ResourceCount_2);
+                                break;
+                            case 3:
+                                chitImage.SetImageResource(Resource.Drawable.ResourceCount_3);
+                                break;
+                            case 4:
+                                chitImage.SetImageResource(Resource.Drawable.ResourceCount_4);
+                                break;
+                            case 5:
+                                chitImage.SetImageResource(Resource.Drawable.ResourceCount_5);
+                                break;
+                            case 6:
+                                chitImage.SetImageResource(Resource.Drawable.ResourceCount_6);
+                                break;
+                            case 8:
+                                chitImage.SetImageResource(Resource.Drawable.ResourceCount_8);
+                                break;
+                            case 9:
+                                chitImage.SetImageResource(Resource.Drawable.ResourceCount_9);
+                                break;
+                            case 10:
+                                chitImage.SetImageResource(Resource.Drawable.ResourceCount_10);
+                                break;
+                            case 11:
+                                chitImage.SetImageResource(Resource.Drawable.ResourceCount_11);
+                                break;
+                            case 12:
+                                chitImage.SetImageResource(Resource.Drawable.ResourceCount_12);
+                                break;
                         }
                     }
 

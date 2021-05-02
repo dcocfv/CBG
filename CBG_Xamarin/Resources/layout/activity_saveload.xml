@@ -112,6 +112,48 @@
                 android:clickable="false"
                 android:text="2: The Four Islands"
                 android:id="@+id/SeafarersButton" />
+            <RadioButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:clickable="false"
+                android:text="3: The Fog Islands"
+                android:id="@+id/three" />
+            <RadioButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:clickable="false"
+                android:text="4: Through the Desert"
+                android:id="@+id/four" />
+            <RadioButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:clickable="false"
+                android:text="5: The Forgotten Tribe"
+                android:id="@+id/five" />
+            <RadioButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:clickable="false"
+                android:text="6: Cloth for Catan"
+                android:id="@+id/six" />
+            <RadioButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:clickable="false"
+                android:text="7: The Pirate Islands"
+                android:id="@+id/seven" />
+            <RadioButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:clickable="false"
+                android:text="8: The Wonders of Catan"
+                android:id="@+id/eight" />
+            <RadioButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:clickable="false"
+                android:text="9: New World"
+                android:id="@+id/nine" />
         </RadioGroup>
 
         <Button

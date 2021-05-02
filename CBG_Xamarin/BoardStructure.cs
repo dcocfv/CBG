@@ -9,37 +9,26 @@ public class HexPosition
     public short y_pos = 0;
     public short z_pos = 0;
     public ushort direction = 0; //For harbors
+    public bool fog;
 
     public HexPosition(){}
 
-    public HexPosition(short x, short y, short z)
-    {
-        x_pos = x;
-        y_pos = y;
-        z_pos = z;
-    }
-
-    public HexPosition(short x, short y)
-    {
-        x_pos = x;
-        y_pos = y;
-        z_pos = (short)(0 - x - y);
-    }
-
-    public HexPosition(short x, short y, short z, ushort dir)
+    public HexPosition(short x, short y, short z, ushort dir = 0, bool f = false)
     {
         x_pos = x;
         y_pos = y;
         z_pos = z;
         direction = dir;
+        fog = f;
     }
 
-    public HexPosition(short x, short y, ushort dir)
+    public HexPosition(short x, short y, ushort dir = 0, bool f = false)
     {
         x_pos = x;
         y_pos = y;
         z_pos = (short)(0 - x - y);
         direction = dir;
+        fog = f;
     }
 
     public List<HexPosition> GetNeighbors()
@@ -218,7 +207,7 @@ public class Board
         {
             foreach(HexPosition location in tileset.location_pool)
             {
-                tiles.Add(new HexPosition(location.x_pos, location.y_pos, location.z_pos, location.direction), new Hex(tileset));
+                tiles.Add(new HexPosition(location.x_pos, location.y_pos, location.z_pos, location.direction, location.fog), new Hex(tileset));
             }
         }
 

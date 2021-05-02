@@ -192,6 +192,9 @@
     </AndroidResource>
   </ItemGroup>
   <ItemGroup>
+    <AndroidResource Include="Resources\drawable\FogPiece.png" />
+  </ItemGroup>
+  <ItemGroup>
     <AndroidResource Include="Resources\drawable\GoldPiece.png" />
   </ItemGroup>
   <ItemGroup>

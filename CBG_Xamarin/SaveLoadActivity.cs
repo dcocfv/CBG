@@ -11,7 +11,7 @@ using System.Text;
 
 namespace CBG_Xamarin
 {
-    [Activity(Label = "SaveLoadActivity", MainLauncher = true)]
+    [Activity(Label = "Catan Board Generator", MainLauncher = true)]
     public class SaveLoadActivity : Activity
     {
         //We only want to start loading the config once, so we will use this variable to ensure that happens only once

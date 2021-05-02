@@ -685,24 +685,36 @@ public static class Maps
                 map.Add(sea);
                 break;
             }
-            /*case "seafarers_3_3":
+            case "seafarers_3_3":
             {
                 TileGenerationSet main_island = new TileGenerationSet();
-                main_island.location_pool.Add(new HexPosition());
-                main_island.location_pool.Add(new HexPosition());
-                main_island.location_pool.Add(new HexPosition());
-                main_island.location_pool.Add(new HexPosition());
-                main_island.location_pool.Add(new HexPosition());
-                main_island.location_pool.Add(new HexPosition());
-                main_island.location_pool.Add(new HexPosition());
-                main_island.location_pool.Add(new HexPosition());
-                main_island.location_pool.Add(new HexPosition());
-                main_island.location_pool.Add(new HexPosition());
-                main_island.location_pool.Add(new HexPosition());
-                main_island.location_pool.Add(new HexPosition());
-                main_island.location_pool.Add(new HexPosition());
-                main_island.location_pool.Add(new HexPosition());
-                
+                for (short x = 0; x <= 3; x++)
+                {
+                    for (short y = -5; y <= -4; y++)
+                    {
+                        for (short z = 1; z <= 4; z++)
+                        {
+                            if (x + y + z == 0)
+                            {
+                                main_island.location_pool.Add(new HexPosition(x, y, z));
+                            }
+                        }
+                    }
+                }
+                for (short x = -3; x <= 0; x++)
+                {
+                    for (short y = 0; y <= 1; y++)
+                    {
+                        for (short z = -1; z <= 2; z++)
+                        {
+                            if (x + y + z == 0)
+                            {
+                                main_island.location_pool.Add(new HexPosition(x, y, z));
+                            }
+                        }
+                    }
+                }
+
                 main_island.resource_pool = new List<Resource>()
                 {
                     Resource.wheat, Resource.wheat, Resource.brick, Resource.brick, Resource.ore, Resource.ore, Resource.sheep, Resource.sheep, Resource.sheep, Resource.sheep, Resource.wood, Resource.wood, Resource.wood, Resource.wood
@@ -714,28 +726,55 @@ public static class Maps
                 };
 
                 TileGenerationSet harbors = new TileGenerationSet();
-                harbors.location_pool.Add(new HexPosition());
-                harbors.location_pool.Add(new HexPosition());
-                harbors.location_pool.Add(new HexPosition());
-                harbors.location_pool.Add(new HexPosition());
-                harbors.location_pool.Add(new HexPosition());
-                harbors.location_pool.Add(new HexPosition());
-                harbors.location_pool.Add(new HexPosition());
-                harbors.location_pool.Add(new HexPosition());
-                
+                harbors.location_pool.Add(new HexPosition(4, -5, dir:2));
+                harbors.location_pool.Add(new HexPosition(3, -6, dir:3));
+                harbors.location_pool.Add(new HexPosition(2, -6, dir:2));
+                harbors.location_pool.Add(new HexPosition(0, -5, dir:3));
+                harbors.location_pool.Add(new HexPosition(-3, 0, dir:4));
+                harbors.location_pool.Add(new HexPosition(-3, 2, dir:0));
+                harbors.location_pool.Add(new HexPosition(-2, 2, dir:5));
+                harbors.location_pool.Add(new HexPosition(-1, 2, dir:5));
+
                 harbors.resource_pool = new List<Resource>()
                 {
                     Resource.harbor_brick, Resource.harbor_ore, Resource.harbor_sheep, Resource.harbor_wheat, Resource.harbor_wood, Resource.harbor_any, Resource.harbor_any, Resource.harbor_any
                 };
                 
+                TileGenerationSet other_island = new TileGenerationSet();
+                other_island.location_pool.Add(new HexPosition(2, 0, f:true));
+                other_island.location_pool.Add(new HexPosition(3, -1, f:true));
+                other_island.location_pool.Add(new HexPosition(2, -1, f:true));
+                other_island.location_pool.Add(new HexPosition(-3, -1, f:true));
+                other_island.location_pool.Add(new HexPosition(-2, -3, f:true));
+                for (short x = -3; x <= 3; x++)
+                {
+                    for (short z = -1; z <= 5; z++)
+                    {
+                        if (x - 2 + z == 0)
+                        {
+                            other_island.location_pool.Add(new HexPosition(x, -2, z, f:true));
+                        }
+                    }
+                }
+
+                other_island.resource_pool = new List<Resource>()
+                {
+                    Resource.sea, Resource.sea, Resource.gold, Resource.gold, Resource.wheat, Resource.wheat, Resource.brick, Resource.brick, Resource.ore, Resource.ore, Resource.sheep, Resource.wood
+                };
+
+                other_island.number_pool = new List<ushort>()
+                {
+                    3, 3, 4, 5, 6, 8, 9, 10, 11, 12
+                };
+
                 TileGenerationSet sea = new TileGenerationSet();
                 for (short x = -4; x <= 4; x++)
                 {
-                    for (short y = -7; y <= 4; y++)
+                    for (short y = -6; y <= 2; y++)
                     {
-                        for (short z = -4; z <= 7; z++)
+                        for (short z = -3; z <= 6; z++)
                         {
-                            if (x + y + z == 0 && !main_island.location_pool.Contains(new HexPosition(x, y, z)) && !harbors.location_pool.Contains(new HexPosition(x, y, z)))
+                            if (x + y + z == 0 && !main_island.location_pool.Contains(new HexPosition(x, y, z)) && !harbors.location_pool.Contains(new HexPosition(x, y, z)) && !other_island.location_pool.Contains(new HexPosition(x, y, z)))
                             {
                                 sea.location_pool.Add(new HexPosition(x, y, z));
                             }
@@ -745,14 +784,254 @@ public static class Maps
 
                 sea.resource_pool = new List<Resource>()
                 {
-                    Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea
+                    Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea
                 };
 
                 map.Add(main_island);
+                map.Add(other_island);
                 map.Add(harbors);
                 map.Add(sea);
                 break;
-            }*/
+            }
+            case "seafarers_4_3":
+            {
+                TileGenerationSet main_island = new TileGenerationSet();
+                for (short x = 0; x <= 3; x++)
+                {
+                    for (short y = -5; y <= -4; y++)
+                    {
+                        for (short z = 1; z <= 4; z++)
+                        {
+                            if (x + y + z == 0)
+                            {
+                                main_island.location_pool.Add(new HexPosition(x, y, z));
+                            }
+                        }
+                    }
+                }
+                main_island.location_pool.Add(new HexPosition(-1, -4));
+                main_island.location_pool.Add(new HexPosition(3, -3));
+                main_island.location_pool.Add(new HexPosition(2, -3));
+                for (short x = -3; x <= 0; x++)
+                {
+                    for (short y = 1; y <= 2; y++)
+                    {
+                        for (short z = -1; z <= 2; z++)
+                        {
+                            if (x + y + z == 0)
+                            {
+                                main_island.location_pool.Add(new HexPosition(x, y, z));
+                            }
+                        }
+                    }
+                }
+
+                main_island.resource_pool = new List<Resource>()
+                {
+                    Resource.wheat, Resource.wheat, Resource.wheat, Resource.brick, Resource.brick, Resource.brick, Resource.ore, Resource.ore, Resource.ore, Resource.sheep, Resource.sheep, Resource.sheep, Resource.sheep, Resource.wood, Resource.wood, Resource.wood, Resource.wood
+                };
+
+                main_island.number_pool = new List<ushort>()
+                {
+                    2, 3, 3, 4, 4, 5, 5, 6, 6, 8, 8, 9, 9, 10, 10, 11, 12
+                };
+
+                TileGenerationSet harbors = new TileGenerationSet();
+                harbors.location_pool.Add(new HexPosition(4, -4, dir:2));
+                harbors.location_pool.Add(new HexPosition(4, -5, dir:1));
+                harbors.location_pool.Add(new HexPosition(3, -6, dir:3));
+                harbors.location_pool.Add(new HexPosition(2, -6, dir:2));
+                harbors.location_pool.Add(new HexPosition(0, -5, dir:2));
+                harbors.location_pool.Add(new HexPosition(-4, 2, dir:4));
+                harbors.location_pool.Add(new HexPosition(-3, 3, dir:0));
+                harbors.location_pool.Add(new HexPosition(-2, 3, dir:5));
+                harbors.location_pool.Add(new HexPosition(0, 2, dir:0));
+
+                harbors.resource_pool = new List<Resource>()
+                {
+                    Resource.harbor_brick, Resource.harbor_ore, Resource.harbor_sheep, Resource.harbor_wheat, Resource.harbor_wood, Resource.harbor_any, Resource.harbor_any, Resource.harbor_any, Resource.harbor_any
+                };
+                
+                TileGenerationSet other_island = new TileGenerationSet();
+                other_island.location_pool.Add(new HexPosition(2, 0, f:true));
+                other_island.location_pool.Add(new HexPosition(3, -1, f:true));
+                other_island.location_pool.Add(new HexPosition(2, -1, f:true));
+                other_island.location_pool.Add(new HexPosition(1, -1, f:true));
+                for (short x = -3; x <= 0; x++)
+                {
+                    for (short y = -2; y <= -1; y++)
+                    {
+                        for (short z = 1; z <= 5; z++)
+                        {
+                            if (x + y + z == 0)
+                            {
+                                other_island.location_pool.Add(new HexPosition(x, y, z, f:true));
+                            }
+                        }
+                    }
+                }
+
+                other_island.resource_pool = new List<Resource>()
+                {
+                    Resource.sea, Resource.sea, Resource.gold, Resource.gold, Resource.wheat, Resource.wheat, Resource.brick, Resource.brick, Resource.ore, Resource.ore, Resource.sheep, Resource.wood
+                };
+
+                other_island.number_pool = new List<ushort>()
+                {
+                    3, 4, 5, 6, 8, 9, 10, 11, 11, 12
+                };
+
+                TileGenerationSet sea = new TileGenerationSet();
+                for (short x = -4; x <= 4; x++)
+                {
+                    for (short y = -6; y <= 3; y++)
+                    {
+                        for (short z = -3; z <= 6; z++)
+                        {
+                            if (x + y + z == 0 && !main_island.location_pool.Contains(new HexPosition(x, y, z)) && !harbors.location_pool.Contains(new HexPosition(x, y, z)) && !other_island.location_pool.Contains(new HexPosition(x, y, z)))
+                            {
+                                sea.location_pool.Add(new HexPosition(x, y, z));
+                            }
+                        }
+                    }
+                }
+
+                sea.resource_pool = new List<Resource>()
+                {
+                    Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea
+                };
+
+                map.Add(main_island);
+                map.Add(other_island);
+                map.Add(harbors);
+                map.Add(sea);
+                break;
+            }
+            case "seafarers_5_3":
+            case "seafarers_6_3":
+            {
+                TileGenerationSet main_island = new TileGenerationSet();
+                for (short x = 1; x <= 3; x++)
+                {
+                    for (short y = -7; y <= 0; y++)
+                    {
+                        for (short z = -3; z <= 4; z++)
+                        {
+                            if (x + y + z == 0)
+                            {
+                                main_island.location_pool.Add(new HexPosition(x, y, z));
+                            }
+                        }
+                    }
+                }
+                main_island.location_pool.Add(new HexPosition(0, -1));
+                main_island.location_pool.Add(new HexPosition(0, -2));
+                main_island.location_pool.Add(new HexPosition(0, -3));
+
+                main_island.resource_pool = new List<Resource>()
+                {
+                    Resource.desert, Resource.wheat, Resource.wheat, Resource.wheat, Resource.wheat, Resource.wheat, Resource.brick, Resource.brick, Resource.brick, Resource.brick, Resource.brick, Resource.ore, Resource.ore, Resource.ore, Resource.ore, Resource.ore, Resource.sheep, Resource.sheep, Resource.sheep, Resource.sheep, Resource.wood, Resource.wood, Resource.wood, Resource.wood
+                };
+
+                main_island.number_pool = new List<ushort>()
+                {
+                    2, 3, 3, 3, 4, 4, 5, 5, 6, 6, 6, 8, 8, 8, 9, 9, 10, 10, 11, 11, 11, 12, 12
+                };
+
+                TileGenerationSet gold = new TileGenerationSet();
+                gold.location_pool.Add(new HexPosition(-3, 3));
+                gold.location_pool.Add(new HexPosition(-3, -4));
+
+                gold.resource_pool = new List<Resource>()
+                {
+                    Resource.gold, Resource.gold
+                };
+
+                gold.number_pool = new List<ushort>()
+                {
+                    4, 10
+                };
+
+                TileGenerationSet harbors = new TileGenerationSet();
+                harbors.location_pool.Add(new HexPosition(4, -1, dir:2));
+                harbors.location_pool.Add(new HexPosition(4, -2, dir:1));
+                harbors.location_pool.Add(new HexPosition(4, -5, dir:2));
+                harbors.location_pool.Add(new HexPosition(4, -7, dir:1));
+                harbors.location_pool.Add(new HexPosition(2, -7, dir:3));
+                harbors.location_pool.Add(new HexPosition(0, -4, dir:4));
+                harbors.location_pool.Add(new HexPosition(-1, -2, dir:4));
+                harbors.location_pool.Add(new HexPosition(0, 0, dir:5));
+                harbors.location_pool.Add(new HexPosition(2, 1, dir:0));
+
+                harbors.resource_pool = new List<Resource>()
+                {
+                    Resource.harbor_brick, Resource.harbor_ore, Resource.harbor_sheep, Resource.harbor_wheat, Resource.harbor_wood, Resource.harbor_any, Resource.harbor_any, Resource.harbor_any, Resource.harbor_any
+                };
+                
+                TileGenerationSet other_island = new TileGenerationSet();
+                other_island.location_pool.Add(new HexPosition(1, 2, f:true));
+                other_island.location_pool.Add(new HexPosition(0, 2, f:true));
+                other_island.location_pool.Add(new HexPosition(-1, 3, f:true));
+                other_island.location_pool.Add(new HexPosition(-2, 3, f:true));
+                other_island.location_pool.Add(new HexPosition(-1, 2, f:true));
+                other_island.location_pool.Add(new HexPosition(-1, 1, f:true));
+                other_island.location_pool.Add(new HexPosition(-2, -5, f:true));
+                other_island.location_pool.Add(new HexPosition(-1, -4, f:true));
+                other_island.location_pool.Add(new HexPosition(-1, -5, f:true));
+                other_island.location_pool.Add(new HexPosition(-1, -6, f:true));
+                other_island.location_pool.Add(new HexPosition(0, -6, f:true));
+                other_island.location_pool.Add(new HexPosition(1, -7, f:true));
+                for (short x = -3; x <= -2; x++)
+                {
+                    for (short y = -4; y <= 2; y++)
+                    {
+                        for (short z = 0; z <= 6; z++)
+                        {
+                            if (x + y + z == 0)
+                            {
+                                other_island.location_pool.Add(new HexPosition(x, y, z, f:true));
+                            }
+                        }
+                    }
+                }
+
+                other_island.resource_pool = new List<Resource>()
+                {
+                    Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.gold, Resource.wheat, Resource.wheat, Resource.brick, Resource.brick, Resource.ore, Resource.ore, Resource.sheep, Resource.sheep, Resource.sheep, Resource.wood, Resource.wood, Resource.wood
+                };
+
+                other_island.number_pool = new List<ushort>()
+                {
+                    2, 2, 3, 4, 5, 5, 6, 8, 9, 9, 10, 11, 12
+                };
+
+                TileGenerationSet sea = new TileGenerationSet();
+                for (short x = -4; x <= 4; x++)
+                {
+                    for (short y = -8; y <= 4; y++)
+                    {
+                        for (short z = -4; z <= 8; z++)
+                        {
+                            if (x + y + z == 0 && !main_island.location_pool.Contains(new HexPosition(x, y, z)) && !gold.location_pool.Contains(new HexPosition(x, y, z)) && !harbors.location_pool.Contains(new HexPosition(x, y, z)) && !other_island.location_pool.Contains(new HexPosition(x, y, z)))
+                            {
+                                sea.location_pool.Add(new HexPosition(x, y, z));
+                            }
+                        }
+                    }
+                }
+
+                sea.resource_pool = new List<Resource>()
+                {
+                    Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea, Resource.sea
+                };
+
+                map.Add(main_island);
+                map.Add(gold);
+                map.Add(other_island);
+                map.Add(harbors);
+                map.Add(sea);
+                break;
+            }
             case "seafarers_3_4":
             {
                 TileGenerationSet main_island = new TileGenerationSet();

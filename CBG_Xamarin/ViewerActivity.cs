@@ -354,6 +354,29 @@ namespace CBG_Xamarin
                             currentChit.SetTextColor(Android.Graphics.Color.LightGray);
                         }
                     }
+
+                    //If the tile is covered by fog (seafarers scenario 3)
+                    if (currentTile.Key.fog)
+                    {
+                        //Create a new image and add it to the layout
+                        ImageView fogImage = new ImageView(this);
+                        r.AddView(fogImage);
+
+                        //Move the hexagon into place
+                        fogImage.TranslationX = (int)xPos;
+                        fogImage.TranslationY = (int)yPos;
+
+                        //Adjust max size of the tiles
+                        fogImage.SetMaxHeight(dimensions);
+                        fogImage.SetMaxWidth(dimensions);
+                        fogImage.SetAdjustViewBounds(true);
+
+                        //Set fog image
+                        fogImage.SetImageResource(Resource.Drawable.FogPiece);
+
+                        //Setup functionality for clicking fog tile
+                        fogImage.Click += (sender, e) => { fogImage.Visibility = ViewStates.Gone; };
+                    }
                 }
             }
         }

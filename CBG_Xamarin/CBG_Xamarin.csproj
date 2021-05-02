@@ -191,7 +191,9 @@
       <SubType>Designer</SubType>
     </AndroidResource>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <AndroidResource Include="Resources\drawable\FogPiece.png" />
+  </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\raw\LoadingIcon2.mp4" />
   </ItemGroup>

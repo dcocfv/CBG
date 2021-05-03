@@ -567,7 +567,8 @@ namespace CBG_Xamarin
             while ((!stopAll && !stopSome) &&
                   (!analyzer.acceptable_variance(board, variance) ||
                   !analyzer.acceptable_distribution_tile(board, brick, ore, sheep, wheat, wood, gold, errorTolerance) ||
-                  !analyzer.no_6_8_adjacent(board)));
+                  !analyzer.no_6_8_adjacent(board))
+                  && (boardConfig.Length < 12 || boardConfig[12] != '7'));
 
             /*float total_init_req = init_brick + init_ore + init_sheep + init_wheat + init_wood + init_gold;
             float total_end_req = brick + ore + sheep + wheat + wood + gold;

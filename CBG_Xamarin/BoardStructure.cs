@@ -205,6 +205,16 @@ public class Board
         //Add all tiles
         foreach(var tileset in current_board_config)
         {
+            //Check that config is valid
+            int count = 0;
+            foreach(var r in tileset.resource_pool)
+            {
+                if(r == Resource.wheat || r == Resource.brick || r == Resource.ore || r == Resource.sheep || r == Resource.wood || r == Resource.gold)
+                    count++;
+            }
+            if(!(tileset.location_pool.Count == tileset.resource_pool.Count && tileset.number_pool.Count == count))
+                throw new Exception("Map config sizes do not match: " + tileset.location_pool.Count + ", " + tileset.resource_pool.Count + ", " + tileset.number_pool.Count);
+
             foreach(HexPosition location in tileset.location_pool)
             {
                 tiles.Add(new HexPosition(location.x_pos, location.y_pos, location.z_pos, location.direction, location.fog), new Hex(tileset));

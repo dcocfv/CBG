@@ -1705,7 +1705,7 @@ public static class Maps
 
                 other_island.number_pool = new List<ushort>()
                 {
-                    0, 0, 0, 0, 0, 0
+                    0, 0
                 };
 
                 TileGenerationSet harbors = new TileGenerationSet();
@@ -1948,7 +1948,7 @@ public static class Maps
 
                 other_island.number_pool = new List<ushort>()
                 {
-                    0, 0, 0, 0
+                    0
                 };
 
                 TileGenerationSet harbors = new TileGenerationSet();

@@ -68,18 +68,7 @@ namespace CBG_Xamarin
             //Setup functionality for back button
             backButton.Click += (sender, e) =>
             {
-                //Make this button not clickable and gone
-                backButton.Clickable = false;
-                backButton.Visibility = ViewStates.Gone;
-                //Make the prompt visible and clickable
-                TextView ContinuePrompt = FindViewById<TextView>(Resource.Id.ContinuePrompt);
-                ContinuePrompt.Visibility = ViewStates.Visible;
-                Button Yes = FindViewById<Button>(Resource.Id.Yes);
-                Yes.Visibility = ViewStates.Visible;
-                Yes.Clickable = true;
-                Button No = FindViewById<Button>(Resource.Id.No);
-                No.Visibility = ViewStates.Visible;
-                No.Clickable = true;
+                backButtonPressed();
             };
 
             //Get the yes button
@@ -598,7 +587,25 @@ namespace CBG_Xamarin
         public override void OnBackPressed()
         {
             //Go back to the generator activity
-            loadPreviousActivity();
+            backButtonPressed();
+        }
+
+        public void backButtonPressed()
+        {
+            //Get the back button
+            ImageButton backButton = FindViewById<ImageButton>(Resource.Id.backButton);
+            //Make this button not clickable and gone
+            backButton.Clickable = false;
+            backButton.Visibility = ViewStates.Gone;
+            //Make the prompt visible and clickable
+            TextView ContinuePrompt = FindViewById<TextView>(Resource.Id.ContinuePrompt);
+            ContinuePrompt.Visibility = ViewStates.Visible;
+            Button Yes = FindViewById<Button>(Resource.Id.Yes);
+            Yes.Visibility = ViewStates.Visible;
+            Yes.Clickable = true;
+            Button No = FindViewById<Button>(Resource.Id.No);
+            No.Visibility = ViewStates.Visible;
+            No.Clickable = true;
         }
 
         //This function goes back to the previous activity
@@ -624,6 +631,9 @@ namespace CBG_Xamarin
 
             //Start the activity
             StartActivity(generatorIntent);
+
+            //close this activity
+            Finish();
         }
     }
 }

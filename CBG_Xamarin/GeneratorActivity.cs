@@ -117,6 +117,15 @@ namespace CBG_Xamarin
                 }
             }
 
+            //make gold visible or invisible as necessary
+            if (boardConfig[0] == 'b' || (boardConfig[0] == 's' && boardConfig[boardConfig.Length - 1] == '2'))
+            {
+                TextView v1 = FindViewById<TextView>(Resource.Id.Gold);
+                v1.Visibility = ViewStates.Gone;
+                SeekBar v2 = FindViewById<SeekBar>(Resource.Id.GoldBar);
+                v2.Visibility = ViewStates.Gone;
+            }
+
             //Get the back button
             ImageButton backButton = FindViewById<ImageButton>(Resource.Id.backButton);
             backButton.SetImageResource(Resource.Drawable.BackButton);
@@ -124,18 +133,7 @@ namespace CBG_Xamarin
             //Setup functionality for back button
             backButton.Click += (sender, e) =>
             {
-                //Make this button not clickable and gone
-                backButton.Clickable = false;
-                backButton.Visibility = ViewStates.Gone;
-                //Make the prompt visible and clickable
-                TextView ContinuePrompt = FindViewById<TextView>(Resource.Id.ContinuePrompt);
-                ContinuePrompt.Visibility = ViewStates.Visible;
-                Button Yes = FindViewById<Button>(Resource.Id.Yes);
-                Yes.Visibility = ViewStates.Visible;
-                Yes.Clickable = true;
-                Button No = FindViewById<Button>(Resource.Id.No);
-                No.Visibility = ViewStates.Visible;
-                No.Clickable = true;
+                backButtonPressed();
             };
 
             //Get the yes button
@@ -163,7 +161,55 @@ namespace CBG_Xamarin
                 Button No = FindViewById<Button>(Resource.Id.No);
                 No.Visibility = ViewStates.Gone;
                 No.Clickable = false;
+                
+                ImageButton resetButton = FindViewById<ImageButton>(Resource.Id.resetButton);
+                resetButton.Clickable = true;
             };
+
+            //Reset button functionality
+            ImageButton resetButton = FindViewById<ImageButton>(Resource.Id.resetButton);
+            resetButton.SetImageResource(Resource.Drawable.ResetButton);
+            resetButton.Click += (sender, e) =>
+            {
+                SeekBar VarianceBar = FindViewById<SeekBar>(Resource.Id.VarianceBar);
+                VarianceBar.Progress = 2;
+
+                SeekBar BrickBar = FindViewById<SeekBar>(Resource.Id.BrickBar);
+                BrickBar.Progress = 50;
+
+                SeekBar OreBar = FindViewById<SeekBar>(Resource.Id.OreBar);
+                OreBar.Progress = 50;
+
+                SeekBar WheatBar = FindViewById<SeekBar>(Resource.Id.WheatBar);
+                WheatBar.Progress = 50;
+
+                SeekBar SheepBar = FindViewById<SeekBar>(Resource.Id.SheepBar);
+                SheepBar.Progress = 50;
+
+                SeekBar WoodBar = FindViewById<SeekBar>(Resource.Id.WoodBar);
+                WoodBar.Progress = 50;
+
+                SeekBar GoldBar = FindViewById<SeekBar>(Resource.Id.GoldBar);
+                GoldBar.Progress = 50;
+
+                if (System.Environment.ProcessorCount >= 1 && System.Environment.ProcessorCount <= 10)
+                {
+                    TextView NumThreadsText = FindViewById<TextView>(Resource.Id.NumThreads);
+                    NumThreadsText.Text = "Num Threads: " + System.Environment.ProcessorCount;
+
+                    SeekBar NumThreadsBar = FindViewById<SeekBar>(Resource.Id.NumThreadsBar);
+                    NumThreadsBar.Progress = System.Environment.ProcessorCount - 1;
+                }
+                else
+                {
+                    TextView NumThreadsText = FindViewById<TextView>(Resource.Id.NumThreads);
+                    NumThreadsText.Text = "Num Threads: 1";
+
+                    SeekBar NumThreadsBar = FindViewById<SeekBar>(Resource.Id.NumThreadsBar);
+                    NumThreadsBar.Progress = 0;
+                }
+            };
+
 
             //Add functionality to Resource Options buton
             Button ResourceOptions = FindViewById<Button>(Resource.Id.ResourceOptions);
@@ -228,6 +274,28 @@ namespace CBG_Xamarin
                 }
             };
 
+            //Add functionality to advanced options button
+            Button AdvancedOptions = FindViewById<Button>(Resource.Id.AdvancedOptions);
+            AdvancedOptions.Click += (sender, e) =>
+            {
+                View[] views = new View[2];
+
+                views[0] = FindViewById<TextView>(Resource.Id.NumThreads);
+                views[1] = FindViewById<SeekBar>(Resource.Id.NumThreadsBar);
+
+                for (int i = 0; i < views.Length; i++)
+                {
+                    if (views[i].Visibility == ViewStates.Visible)
+                    {
+                        views[i].Visibility = ViewStates.Gone;
+                    }
+                    else
+                    {
+                        views[i].Visibility = ViewStates.Visible;
+                    }
+                }
+            };
+
             //Update the Number of threads whenever it is changed
             SeekBar NumThreadsBar2 = FindViewById<SeekBar>(Resource.Id.NumThreadsBar);
             NumThreadsBar2.ProgressChanged += (sender, e) =>
@@ -235,6 +303,32 @@ namespace CBG_Xamarin
                 TextView NumThreadsText2 = FindViewById<TextView>(Resource.Id.NumThreads);
                 int temp = NumThreadsBar2.Progress + 1;
                 NumThreadsText2.Text = "Num Threads: " + temp;
+            };
+
+
+            //Do hint button things
+            ImageButton ProductionHelp = FindViewById<ImageButton>(Resource.Id.ProductionHelp);
+            ProductionHelp.SetImageResource(Resource.Drawable.FogPiece);
+            ProductionHelp.Click += (sender, e) =>
+            {
+                TextView ProductionHint = FindViewById<TextView>(Resource.Id.ProductionHint);
+                ProductionHint.Visibility = ViewStates.Visible;
+            };
+
+            ImageButton IntersectionHelp = FindViewById<ImageButton>(Resource.Id.IntersectionHelp);
+            IntersectionHelp.SetImageResource(Resource.Drawable.FogPiece);
+            IntersectionHelp.Click += (sender, e) =>
+            {
+                TextView IntersectionHint = FindViewById<TextView>(Resource.Id.IntersectionHint);
+                IntersectionHint.Visibility = ViewStates.Visible;
+            };
+
+            ImageButton AdvancedHelp = FindViewById<ImageButton>(Resource.Id.AdvancedHelp);
+            AdvancedHelp.SetImageResource(Resource.Drawable.FogPiece);
+            AdvancedHelp.Click += (sender, e) =>
+            {
+                TextView AdvancedHint = FindViewById<TextView>(Resource.Id.AdvancedHint);
+                AdvancedHint.Visibility = ViewStates.Visible;
             };
 
 
@@ -292,6 +386,9 @@ namespace CBG_Xamarin
 
                     //Start the activity
                     StartActivity(viewerIntent);
+
+                    //close the activity
+                    Finish();
                 }
             };
         }
@@ -299,8 +396,8 @@ namespace CBG_Xamarin
         //This function overrides the behavoir for when the native Android back button is pressed
         public override void OnBackPressed()
         {
-            //Go back to the generator activity
-            loadPreviousActivity();
+            //Run the same function that is pressed when you hit the back button
+            backButtonPressed();
         }
 
         //This function goes back to the previous activity
@@ -312,6 +409,44 @@ namespace CBG_Xamarin
 
             //Start the activity
             StartActivity(saveLoadIntent);
+
+            //close this activity
+            Finish();
+        }
+
+        public override void OnUserInteraction()
+        {
+            TextView ProductionHint = FindViewById<TextView>(Resource.Id.ProductionHint);
+            ProductionHint.Visibility = ViewStates.Gone;
+
+            TextView IntersectionHint = FindViewById<TextView>(Resource.Id.IntersectionHint);
+            IntersectionHint.Visibility = ViewStates.Gone;
+
+            TextView AdvancedHint = FindViewById<TextView>(Resource.Id.AdvancedHint);
+            AdvancedHint.Visibility = ViewStates.Gone;
+        }
+
+        public void backButtonPressed()
+        {
+            //Get the back button
+            ImageButton backButton = FindViewById<ImageButton>(Resource.Id.backButton);
+
+            //Make this button not clickable and gone
+            backButton.Clickable = false;
+            backButton.Visibility = ViewStates.Gone;
+            //Make the prompt visible and clickable
+            TextView ContinuePrompt = FindViewById<TextView>(Resource.Id.ContinuePrompt);
+            ContinuePrompt.Visibility = ViewStates.Visible;
+            Button Yes = FindViewById<Button>(Resource.Id.Yes);
+            Yes.Visibility = ViewStates.Visible;
+            Yes.Clickable = true;
+            Button No = FindViewById<Button>(Resource.Id.No);
+            No.Visibility = ViewStates.Visible;
+            No.Clickable = true;
+
+            //Make the reset button not clickable
+            ImageButton resetButton = FindViewById<ImageButton>(Resource.Id.resetButton);
+            resetButton.Clickable = false;
         }
     }
 }

@@ -8,6 +8,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:animateLayoutChanges="true"
+    android:clickable="false"
     android:id="@+id/menuButtons" >
     <ImageButton
             android:minHeight="100px"
@@ -51,11 +52,25 @@
             android:elevation="1dp"
             android:id="@+id/No" />
 
+        <ImageButton
+            android:background="?android:attr/colorBackground"
+            android:minHeight="100px"
+            android:minWidth="100px"
+            android:maxHeight="100px"
+            android:maxWidth="100px"
+            android:adjustViewBounds="true"
+            android:scaleType="centerInside"
+            android:padding="0px"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:id="@+id/resetButton" />
+
 
 
 
         <Button
-            android:text="Production Distribution"
+            android:text="Resource Options"
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -69,7 +84,6 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/ResourceOptions"
             android:textStyle="bold"
-            android:visibility="gone"
             android:id="@+id/Brick" />
         <SeekBar
             android:layout_width="match_parent"
@@ -79,7 +93,6 @@
             android:max="100"
             android:min="0"
             android:progress="50"
-            android:visibility="gone"
             android:id="@+id/BrickBar" />
 
         <TextView
@@ -89,7 +102,6 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/Brick"
             android:textStyle="bold"
-            android:visibility="gone"
             android:id="@+id/Ore" />
         <SeekBar
             android:layout_width="match_parent"
@@ -99,7 +111,6 @@
             android:max="100"
             android:min="0"
             android:progress="50"
-            android:visibility="gone"
             android:id="@+id/OreBar" />
 
         <TextView
@@ -109,7 +120,6 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/Ore"
             android:textStyle="bold"
-            android:visibility="gone"
             android:id="@+id/Sheep" />
         <SeekBar
             android:layout_width="match_parent"
@@ -119,7 +129,6 @@
             android:max="100"
             android:min="0"
             android:progress="50"
-            android:visibility="gone"
             android:id="@+id/SheepBar" />
 
         <TextView
@@ -129,7 +138,6 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/Sheep"
             android:textStyle="bold"
-            android:visibility="gone"
             android:id="@+id/Wheat" />
         <SeekBar
             android:layout_width="match_parent"
@@ -139,7 +147,6 @@
             android:max="100"
             android:min="0"
             android:progress="50"
-            android:visibility="gone"
             android:id="@+id/WheatBar" />
 
         <TextView
@@ -149,7 +156,6 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/Wheat"
             android:textStyle="bold"
-            android:visibility="gone"
             android:id="@+id/Wood" />
         <SeekBar
             android:layout_width="match_parent"
@@ -159,7 +165,6 @@
             android:max="100"
             android:min="0"
             android:progress="50"
-            android:visibility="gone"
             android:id="@+id/WoodBar" />
 
 
@@ -170,7 +175,6 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/Wood"
             android:textStyle="bold"
-            android:visibility="gone"
             android:id="@+id/Gold" />
         <SeekBar
             android:layout_width="match_parent"
@@ -180,7 +184,6 @@
             android:max="100"
             android:min="0"
             android:progress="50"
-            android:visibility="gone"
             android:id="@+id/GoldBar" />
         
         <TextView
@@ -190,7 +193,6 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/OtherOptions"
             android:textStyle="bold"
-            android:visibility="gone"
             android:id="@+id/Variance" />
         <SeekBar
             android:layout_width="match_parent"
@@ -200,7 +202,6 @@
             android:max="4"
             android:min="0"
             android:progress="2"
-            android:visibility="gone"
             android:id="@+id/VarianceBar" />
 
         <TextView
@@ -208,8 +209,9 @@
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/Variance"
+            android:layout_below="@id/AdvancedOptions"
             android:textStyle="bold"
+            android:visibility="gone"
             android:id="@+id/NumThreads" />
         <SeekBar
             android:layout_width="match_parent"
@@ -219,6 +221,7 @@
             android:max="9"
             android:min="0"
             android:progress="0"
+            android:visibility="gone"
             android:id="@+id/NumThreadsBar" />
 
         <Button
@@ -230,12 +233,102 @@
             android:id="@+id/OtherOptions"/>
 
         <Button
+            android:text="Advanced Options"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/Variance"
+            android:id="@+id/AdvancedOptions"/>
+
+        <Button
             android:text="Generate Board"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
             android:layout_alignParentBottom="true"
             android:id="@+id/GenerateBoard" />
-    
+
+
+        <ImageButton
+            android:minHeight="100px"
+            android:minWidth="100px"
+            android:maxHeight="100px"
+            android:maxWidth="100px"
+            android:adjustViewBounds="true"
+            android:scaleType="centerInside"
+            android:padding="0px"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="?android:attr/colorBackground"
+            android:layout_toRightOf="@id/ResourceOptions"
+            android:layout_alignBottom="@id/ResourceOptions"
+            android:layout_alignTop="@id/ResourceOptions"
+            android:id="@+id/ProductionHelp" />
+        <TextView
+            android:text="Resource Options:\nThese sliders determine the ratios for how much production each resource will have compared to the other resources."
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:visibility="gone"
+            android:elevation="2dp"
+            android:clickable="false"
+            android:background="@color/material_grey_600"
+            android:id="@+id/ProductionHint" />
+
+
+        <ImageButton
+            android:minHeight="100px"
+            android:minWidth="100px"
+            android:maxHeight="100px"
+            android:maxWidth="100px"
+            android:adjustViewBounds="true"
+            android:scaleType="centerInside"
+            android:padding="0px"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="?android:attr/colorBackground"
+            android:layout_toRightOf="@id/OtherOptions"
+            android:layout_alignBottom="@id/OtherOptions"
+            android:layout_alignTop="@id/OtherOptions"
+            android:id="@+id/IntersectionHelp" />
+        <TextView
+            android:text="Intersection Options:\n\nA lower variance means that the production of all the vertices will be more similar. A higher variance means you are more likely to see some really good vertices and some really bad vertices.\n\nThis option greatly effects generation time (lower variance = longer time)."
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:visibility="gone"
+            android:elevation="2dp"
+            android:clickable="false"
+            android:background="@color/material_grey_600"
+            android:id="@+id/IntersectionHint" />
+
+        <ImageButton
+            android:minHeight="100px"
+            android:minWidth="100px"
+            android:maxHeight="100px"
+            android:maxWidth="100px"
+            android:adjustViewBounds="true"
+            android:scaleType="centerInside"
+            android:padding="0px"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="?android:attr/colorBackground"
+            android:layout_toRightOf="@id/AdvancedOptions"
+            android:layout_alignBottom="@id/AdvancedOptions"
+            android:layout_alignTop="@id/AdvancedOptions"
+            android:id="@+id/AdvancedHelp" />
+        <TextView
+            android:text="Advanced Options:\nThis slider changes how many threads will be created and used to generate your board. Default should be fine in most cases."
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:visibility="gone"
+            android:elevation="2dp"
+            android:clickable="false"
+            android:background="@color/material_grey_600"
+            android:id="@+id/AdvancedHint" />
 
 </RelativeLayout>

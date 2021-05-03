@@ -29,7 +29,6 @@
         <RadioButton
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:checked="true"
             android:text="3"
             android:id="@+id/ThreePlayers" />
         <RadioButton
@@ -54,6 +53,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
+            android:visibility="gone"
             android:layout_below="@id/NumberPlayers"
             android:textStyle="bold"
             android:id="@+id/GameTypeText" />
@@ -62,13 +62,13 @@
             android:minHeight="25px"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:visibility="gone"
             android:layout_below="@id/GameTypeText"
             android:layout_alignParentLeft="true"
             android:id="@+id/GameType">
             <RadioButton
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:checked="true"
                 android:text="Base Game"
                 android:id="@+id/BaseGameButton" />
             <RadioButton
@@ -102,16 +102,15 @@
             <RadioButton
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:checked="true"
                 android:clickable="false"
                 android:text="1: Heading to New Shores"
-                android:id="@+id/BaseGameButton" />
+                android:id="@+id/one" />
             <RadioButton
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:clickable="false"
                 android:text="2: The Four Islands"
-                android:id="@+id/SeafarersButton" />
+                android:id="@+id/two" />
             <RadioButton
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -162,5 +161,20 @@
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
             android:layout_alignParentBottom="true"
+            android:visibility="gone"
             android:id="@+id/LoadConfig" />
+
+        <ImageButton
+            android:background="?android:attr/colorBackground"
+            android:minHeight="100px"
+            android:minWidth="100px"
+            android:maxHeight="100px"
+            android:maxWidth="100px"
+            android:adjustViewBounds="true"
+            android:scaleType="centerInside"
+            android:padding="0px"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:id="@+id/resetButton" />
 </RelativeLayout>

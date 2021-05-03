@@ -10,12 +10,21 @@
     android:animateLayoutChanges="true"
     android:id="@+id/menuButtons" >
     <TextView
+        android:text="Chose Game Type:"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:textStyle="bold"
+        android:id="@+id/ChoseGameTypeText" />
+    <TextView
         android:text="Number of Players:"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true"
+        android:layout_below="@id/ChoseGameTypeText"
         android:textStyle="bold"
         android:id="@+id/NumberPlayersText" />
     <RadioGroup

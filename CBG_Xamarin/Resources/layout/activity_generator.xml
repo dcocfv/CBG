@@ -10,6 +10,15 @@
     android:animateLayoutChanges="true"
     android:clickable="false"
     android:id="@+id/menuButtons" >
+    <TextView
+        android:text="Customize Generation:"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:textStyle="bold"
+        android:id="@+id/Customize" />
     <ImageButton
             android:minHeight="100px"
             android:minWidth="100px"
